@@ -1,0 +1,53 @@
+# Interview project requirements
+# Versions pinned to genai_env to avoid conflicts
+
+# ── Core UI ───────────────────────────────────────────────────────────────────
+streamlit==1.55.0
+python-dotenv==1.2.2
+
+# ── Audio (TTS + STT via Groq Whisper) ───────────────────────────────────────
+edge-tts==7.2.8
+groq==0.37.1
+
+# ── Data / Visualisation ──────────────────────────────────────────────────────
+matplotlib==3.10.8
+pandas==2.3.3
+
+# ── Pydantic ──────────────────────────────────────────────────────────────────
+pydantic==2.12.5
+pydantic-settings==2.13.1
+email-validator>=2.0.0
+
+# ── PDF / DOCX generation ────────────────────────────────────────────────────
+reportlab>=4.0
+pypdf>=4.0
+
+# ── LangChain stack ───────────────────────────────────────────────────────────
+langchain==1.2.15
+langchain-community==0.4.1
+langchain-core==1.2.26
+langchain-groq==1.1.2
+langchain-text-splitters==1.1.1
+langsmith==0.7.26
+
+# ── LangGraph ─────────────────────────────────────────────────────────────────
+langgraph==1.1.6
+langgraph-checkpoint==4.0.1
+langgraph-prebuilt==1.0.9
+langgraph-sdk==0.3.12
+
+# ── Document loaders ──────────────────────────────────────────────────────────
+docx2txt==0.9
+PyMuPDF==1.27.2.2
+python-docx==1.2.0
+unstructured==0.21.5
+pdf2image==1.17.0
+pdfminer.six==20260107
+pillow==12.1.1
+pytesseract==0.3.13
+
+# ── HTTP / async utils ────────────────────────────────────────────────────────
+httpx==0.28.1
+aiohttp==3.13.3
+requests==2.32.5
+websockets==16.0
