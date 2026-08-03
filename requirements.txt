@@ -1,17 +1,17 @@
-# Interview project requirements
-# Versions pinned to genai_env to avoid conflicts
+# Smart Placement — Python requirements
+# ─────────────────────────────────────────────────────────
 
-# ── Core UI ───────────────────────────────────────────────────────────────────
-streamlit==1.55.0
+# ── FastAPI (replaces Streamlit) ──────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+
+# ── Environment ───────────────────────────────────────────────────────────────
 python-dotenv==1.2.2
 
 # ── Audio (TTS + STT via Groq Whisper) ───────────────────────────────────────
 edge-tts==7.2.8
 groq==0.37.1
-
-# ── Data / Visualisation ──────────────────────────────────────────────────────
-matplotlib==3.10.8
-pandas==2.3.3
 
 # ── Pydantic ──────────────────────────────────────────────────────────────────
 pydantic==2.12.5
