@@ -463,6 +463,19 @@ h1,h2,h3,h4,h5,h6 {
   animation: pulse 1.5s infinite;
 }
 
+.manual-play-btn {
+  display: block; width: 100%; padding: 10px 16px;
+  background: linear-gradient(135deg, #0A2E1A, #0D3B22);
+  color: #4ADE80; border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 0; font-weight: 700; font-size: 0.88rem;
+  cursor: pointer; transition: all 0.2s;
+  font-family: var(--font-body);
+}
+.manual-play-btn:hover {
+  background: linear-gradient(135deg, #0D3B22, #14532D);
+  border-color: rgba(34,197,94,0.5);
+}
+
 /* ══════════════════════════════════════════════════════════════════════════════
    INTERVIEW REPORT
    ══════════════════════════════════════════════════════════════════════════════ */

@@ -33,6 +33,8 @@ from interview_backend import (
     workflow,
     question_to_audio_b64,
     text_to_audio_b64,
+    question_to_audio_b64_async,
+    text_to_audio_b64_async,
     transcribe_audio,
 )
 from resume_backend import (
@@ -277,7 +279,9 @@ async def start_interview(req: InterviewStartRequest):
         # Generate TTS audio if voice mode
         audio_b64 = ""
         if req.voice_mode and question:
-            audio_b64 = question_to_audio_b64(question)
+            print(f"[API] Generating TTS for first question: {question[:60]}...")
+            audio_b64 = await question_to_audio_b64_async(question)
+            print(f"[API] TTS result: {'SUCCESS' if audio_b64 else 'EMPTY'}, length={len(audio_b64)}")
 
         # Store session info
         interview_sessions[session_id] = {
@@ -357,9 +361,10 @@ async def submit_answer(req: TextAnswerRequest):
         question_audio_b64 = ""
         if session.get("voice_mode"):
             if feedback:
-                feedback_audio_b64 = text_to_audio_b64(feedback)
+                feedback_audio_b64 = await text_to_audio_b64_async(feedback)
             if next_question:
-                question_audio_b64 = question_to_audio_b64(next_question)
+                question_audio_b64 = await question_to_audio_b64_async(next_question)
+            print(f"[API] Answer TTS: feedback={len(feedback_audio_b64)}, question={len(question_audio_b64)}")
 
         return {
             "is_complete": False,
@@ -441,9 +446,10 @@ async def submit_voice_answer(
         question_audio_b64 = ""
         if session.get("voice_mode"):
             if feedback:
-                feedback_audio_b64 = text_to_audio_b64(feedback)
+                feedback_audio_b64 = await text_to_audio_b64_async(feedback)
             if next_question:
-                question_audio_b64 = question_to_audio_b64(next_question)
+                question_audio_b64 = await question_to_audio_b64_async(next_question)
+            print(f"[API] Voice answer TTS: feedback={len(feedback_audio_b64)}, question={len(question_audio_b64)}")
 
         return {
             "transcript": transcript,

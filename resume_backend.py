@@ -1131,6 +1131,50 @@ def _rgbcolor_to_reportlab(rgb: RGBColor) -> colors.Color:
     return colors.Color(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255)
 
 
+# ── Unicode sanitization for PDF (reportlab built-in fonts) ──────────────────
+_PDF_CHAR_MAP = {
+    "\u2013": "-",   # en dash → hyphen
+    "\u2014": "-",   # em dash → hyphen
+    "\u2015": "-",   # horizontal bar → hyphen
+    "\u2018": "'",   # left single quote → apostrophe
+    "\u2019": "'",   # right single quote → apostrophe
+    "\u201C": '"',   # left double quote → double quote
+    "\u201D": '"',   # right double quote → double quote
+    "\u2026": "...", # ellipsis → three dots
+    "\u00A0": " ",   # non-breaking space → space
+    "\u200B": "",    # zero-width space → nothing
+    "\u00B7": "*",   # middle dot → asterisk
+    "\uFEFF": "",    # BOM → nothing
+}
+
+
+def _sanitize_for_pdf(obj):
+    """Recursively replace Unicode characters unsupported by reportlab's
+    built-in fonts (Helvetica/Times/Courier) with safe ASCII equivalents.
+
+    Works on strings, lists, dicts, and Pydantic models. Does not remove
+    meaningful content — only replaces characters that would render as
+    black boxes (■) in the generated PDF.
+    """
+    if isinstance(obj, str):
+        for u_char, replacement in _PDF_CHAR_MAP.items():
+            obj = obj.replace(u_char, replacement)
+        return obj
+    if isinstance(obj, list):
+        return [_sanitize_for_pdf(item) for item in obj]
+    if isinstance(obj, dict):
+        return {k: _sanitize_for_pdf(v) for k, v in obj.items()}
+    if hasattr(obj, "__dict__"):
+        for attr, value in vars(obj).items():
+            if isinstance(value, (str, list, dict)):
+                try:
+                    setattr(obj, attr, _sanitize_for_pdf(value))
+                except (AttributeError, TypeError):
+                    pass
+        return obj
+    return obj
+
+
 def resume_to_pdf(resume: Resume, style: Optional[dict] = None) -> io.BytesIO:
     """
     Renders a validated `Resume` into a clean, ATS-friendly PDF.
@@ -1196,7 +1240,7 @@ def resume_to_pdf(resume: Resume, style: Optional[dict] = None) -> io.BytesIO:
     )
 
     def esc(text: str) -> str:
-        return _xml_escape(text or "")
+        return _xml_escape(_sanitize_for_pdf(text or ""))
 
     def bullets(items: List[str]) -> ListFlowable:
         return ListFlowable(
@@ -1229,8 +1273,8 @@ def resume_to_pdf(resume: Resume, style: Optional[dict] = None) -> io.BytesIO:
     if resume.education:
         section_heading("Education")
         for e in resume.education:
-            story.append(Paragraph(f"<b>{esc(e.degree)}</b> — {esc(e.institution)}", bold_line))
-            meta = f"{esc(e.start_year)} – {esc(e.end_year)}"
+            story.append(Paragraph(f"<b>{esc(e.degree)}</b> - {esc(e.institution)}", bold_line))
+            meta = f"{esc(e.start_year)} - {esc(e.end_year)}"
             if e.grade:
                 meta += f" | Grade: {esc(e.grade)}"
             if e.location:
@@ -1240,8 +1284,8 @@ def resume_to_pdf(resume: Resume, style: Optional[dict] = None) -> io.BytesIO:
     if resume.experience:
         section_heading("Experience")
         for exp in resume.experience:
-            story.append(Paragraph(f"<b>{esc(exp.role)}</b> — {esc(exp.company)}", bold_line))
-            meta = f"{esc(exp.start_date)} – {esc(exp.end_date)}"
+            story.append(Paragraph(f"<b>{esc(exp.role)}</b> - {esc(exp.company)}", bold_line))
+            meta = f"{esc(exp.start_date)} - {esc(exp.end_date)}"
             if exp.location:
                 meta += f" | {esc(exp.location)}"
             story.append(Paragraph(meta, italic_small))
@@ -1263,7 +1307,7 @@ def resume_to_pdf(resume: Resume, style: Optional[dict] = None) -> io.BytesIO:
             line = c.name
             extras = [b for b in [c.issuer, c.date] if b]
             if extras:
-                line += " — " + ", ".join(extras)
+                line += " - " + ", ".join(extras)
             lines.append(line)
         story.append(bullets(lines))
 

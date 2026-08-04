@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import {
   processResume, startInterview, submitAnswer,
   submitVoiceAnswer, endInterview, resetInterview,
@@ -33,6 +33,11 @@ export default function MockInterview() {
   const [report, setReport] = useState(null)
   const [textAnswer, setTextAnswer] = useState('')
   const [transcript, setTranscript] = useState('')
+
+  // ── Audio/Video state ─────────────────────────────────────────────────────
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+  const [audioError, setAudioError] = useState('')
+  const audioSeqRef = useRef(0)
 
   // ── Voice recording ─────────────────────────────────────────────────────
   const [isRecording, setIsRecording] = useState(false)
@@ -69,7 +74,20 @@ export default function MockInterview() {
 
   const handleStartInterview = async () => {
     if (!extractedInfo) return
+
+    // Unlock browser autoplay on this user gesture so the first
+    // question audio can auto-play after the async API call returns.
+    // A minimal silent WAV (44 bytes) played during the click context
+    // tells the browser "the user intends audio playback".
+    try {
+      const silence = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=')
+      await silence.play()
+      silence.pause()
+      silence.src = ''
+    } catch (_) { /* ignore — worst case the manual play button shows */ }
+
     setError(null); setLoading(true); setLoadingMessage('Generating first question…')
+    setAudioError('')
 
     try {
       const { data } = await startInterview({
@@ -82,6 +100,11 @@ export default function MockInterview() {
       })
       setSessionId(data.session_id)
       setCurrentQuestion(data.question)
+
+      if (voiceMode && data.question && !data.question_audio_b64) {
+        setAudioError('Audio generation unavailable. Question displayed as text.')
+      }
+      audioSeqRef.current += 1
       setQuestionAudioB64(data.question_audio_b64 || '')
       setFeedbackAudioB64('')
       setStep('interview')
@@ -92,6 +115,7 @@ export default function MockInterview() {
 
   // ── Handle answer response (shared by text + voice) ─────────────────────
   const handleAnswerResponse = (data) => {
+    setAudioError('')
     if (data.is_complete) {
       setReport(data.report)
       setStep('report')
@@ -100,6 +124,11 @@ export default function MockInterview() {
       setLastFeedback(data.feedback)
       setTopicsCovered(data.topics_covered || [])
       setTopicCount(data.topic_count || 0)
+
+      if (voiceMode && data.next_question && !data.question_audio_b64) {
+        setAudioError('Audio generation unavailable. Question displayed as text.')
+      }
+      audioSeqRef.current += 1
       setQuestionAudioB64(data.question_audio_b64 || '')
       setFeedbackAudioB64(data.feedback_audio_b64 || '')
     }
@@ -203,7 +232,26 @@ export default function MockInterview() {
     setTextAnswer('')
     setResumeFile(null)
     setError(null)
+    setIsAudioPlaying(false)
+    setAudioError('')
+    audioSeqRef.current = 0
   }
+
+  // ── Audio state callback from AvatarPanel ──────────────────────────────
+  const handleAudioStateChange = useCallback((playing) => {
+    setIsAudioPlaying(playing)
+  }, [])
+
+  // ── Compute avatar state ──────────────────────────────────────────────
+  // Priority: recording > audio playing > question displayed (text mode) > waiting
+  const computedAvatarState = isRecording
+    ? 'new_hearing'
+    : isAudioPlaying
+      ? 'new_final_question'
+      : 'new_waiting'
+
+  // In text mode, show question video while question is freshly displayed
+  const isShowingQuestion = !voiceMode && !!currentQuestion && !isRecording && !isAudioPlaying
 
   // ════════════════════════════════════════════════════════════════════════
   // RENDER
@@ -314,15 +362,26 @@ export default function MockInterview() {
           {/* Left: Avatar */}
           <div>
             <AvatarPanel
-              avatarState={isRecording ? 'new_hearing' : 'new_waiting'}
+              avatarState={computedAvatarState}
               feedbackAudioB64={feedbackAudioB64}
               questionAudioB64={questionAudioB64}
               isRecording={isRecording}
+              isShowingQuestion={isShowingQuestion}
+              onAudioStateChange={handleAudioStateChange}
+              audioSeqId={audioSeqRef.current}
             />
           </div>
 
           {/* Right: Question + Answer */}
           <div>
+            {/* Audio error notice */}
+            {audioError && (
+              <div className="error-message" style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.3)', color: '#FCD34D' }}>
+                🔇 {audioError}
+                <button style={{ float: 'right', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }} onClick={() => setAudioError('')}>✕</button>
+              </div>
+            )}
+
             {/* Feedback from last answer */}
             {lastFeedback && (
               <div className="feedback-card">
