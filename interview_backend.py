@@ -35,33 +35,88 @@ model_text = ChatGroq(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NEW: TEXT → AUDIO (gTTS)
+# NEW: TEXT → AUDIO (edge-tts)
 # ═══════════════════════════════════════════════════════════════════════════════
+
+async def _synthesize_audio(text: str) -> bytes:
+    """Core async TTS synthesis using edge-tts. Returns raw MP3 bytes."""
+    communicate = edge_tts.Communicate(text, "en-US-GuyNeural", rate="-10%")
+    buffer = io.BytesIO()
+    async for chunk in communicate.stream():
+        if chunk["type"] == "audio":
+            buffer.write(chunk["data"])
+    buffer.seek(0)
+    audio_bytes = buffer.read()
+    print(f"[TTS] Synthesized {len(audio_bytes)} bytes of audio for text: {text[:60]}...")
+    return audio_bytes
+
+
+async def text_to_audio_b64_async(text: str) -> str:
+    """Async version — call this from FastAPI async routes."""
+    try:
+        print(f"[TTS] text_to_audio_b64_async called, text length: {len(text)}")
+        audio_bytes = await _synthesize_audio(text)
+        if not audio_bytes:
+            print("[TTS] WARNING: edge-tts returned empty audio bytes")
+            return ""
+        result = base64.b64encode(audio_bytes).decode("utf-8")
+        print(f"[TTS] base64 result length: {len(result)}")
+        return result
+    except Exception as e:
+        print(f"[TTS] FAILED: {repr(e)}")
+        import traceback
+        traceback.print_exc()
+        return ""
+
 
 def text_to_audio_b64(text: str) -> str:
     """
-    Convert any text to base64-encoded MP3 using Microsoft Edge TTS.
-    Voice: en-US-GuyNeural (natural male voice).
-    Returns empty string on failure (graceful degradation).
+    Sync wrapper for TTS. Detects if an asyncio event loop is already
+    running (e.g. inside FastAPI) and handles it correctly.
+    Returns base64-encoded MP3 string, or "" on failure.
     """
     try:
-        async def _synthesize():
-            communicate = edge_tts.Communicate(text, "en-US-GuyNeural",rate="-10%")
-            buffer = io.BytesIO()
-            async for chunk in communicate.stream():
-                if chunk["type"] == "audio":
-                    buffer.write(chunk["data"])
-            buffer.seek(0)
-            return buffer.read()
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
 
-        audio_bytes = asyncio.run(_synthesize())
-        return base64.b64encode(audio_bytes).decode("utf-8")
-    except Exception as e:
-        print(f"edge-tts error: {e}")
-        return ""
+    if loop and loop.is_running():
+        # We're inside an async context (FastAPI) — cannot use asyncio.run().
+        # Use a new thread to avoid blocking the event loop.
+        import concurrent.futures
+        print("[TTS] Detected running event loop, using thread executor")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(asyncio.run, _synthesize_audio(text))
+            try:
+                audio_bytes = future.result(timeout=30)
+                if not audio_bytes:
+                    print("[TTS] WARNING: edge-tts returned empty audio bytes")
+                    return ""
+                result = base64.b64encode(audio_bytes).decode("utf-8")
+                print(f"[TTS] Sync wrapper success, base64 length: {len(result)}")
+                return result
+            except Exception as e:
+                print(f"[TTS] Thread executor FAILED: {repr(e)}")
+                import traceback
+                traceback.print_exc()
+                return ""
+    else:
+        # No event loop running — safe to use asyncio.run()
+        try:
+            print("[TTS] No running event loop, using asyncio.run()")
+            audio_bytes = asyncio.run(_synthesize_audio(text))
+            if not audio_bytes:
+                return ""
+            return base64.b64encode(audio_bytes).decode("utf-8")
+        except Exception as e:
+            print(f"[TTS] asyncio.run FAILED: {repr(e)}")
+            import traceback
+            traceback.print_exc()
+            return ""
 
 # alias kept for backward compat
 question_to_audio_b64 = text_to_audio_b64
+question_to_audio_b64_async = text_to_audio_b64_async
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
