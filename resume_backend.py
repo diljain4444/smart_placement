@@ -4,6 +4,7 @@ import re
 import io
 import math
 from functools import lru_cache
+import unicodedata
 from xml.sax.saxutils import escape as _xml_escape
 from typing import List, Optional
 
@@ -207,6 +208,10 @@ STRICT RULES:
   action-verb-led bullet points.
 - If a field says "Not provided" or "None provided", output it as an
   empty value in the schema rather than fabricating content.
+- Use only plain keyboard punctuation: a single ASCII hyphen "-" for all
+  dashes and hyphenation (never en dashes, em dashes, or other dash
+  variants), straight quotes (' and "), and three periods "..." for an
+  ellipsis. Do not use typographic/"smart" punctuation.
 - Return ONLY the JSON object described below. No preamble, no
   markdown code fences, no explanation, no <reasoning> or <think> tags.
 
@@ -240,7 +245,7 @@ Achievements:
 
 {format_instructions}
 """
-
+# MODIFIER_FROM_TEXT_PROMPT_TEXT
 PROMPT = PromptTemplate(
     template=RESUME_PROMPT_TEXT,
     input_variables=[
@@ -315,8 +320,12 @@ STRICT RULES:
   job description come first.
 - If a field says "Not provided" or "None provided", output it as an
   empty value in the schema rather than fabricating content.
-- Return ONLY the JSON object described below. No preamble, no markdown
-  code fences, no explanation, no <reasoning> or <think> tags.
+- Use only plain keyboard punctuation: a single ASCII hyphen "-" for all
+  dashes and hyphenation (never en dashes, em dashes, or other dash
+  variants), straight quotes (' and "), and three periods "..." for an
+  ellipsis. Do not use typographic/"smart" punctuation.
+- Return ONLY the JSON object described below. No preamble, no
+  markdown code fences, no explanation, no <reasoning> or <think> tags.
 
 Target Job Description
 -------------------------
@@ -697,6 +706,10 @@ STRICT RULES:
 - If a field is missing entirely from the raw text (e.g. no phone number,
   no LinkedIn URL), leave that field empty in the output schema rather
   than fabricating one.
+- Use only plain keyboard punctuation: a single ASCII hyphen "-" for all
+  dashes and hyphenation (never en dashes, em dashes, or other dash
+  variants), straight quotes (' and "), and three periods "..." for an
+  ellipsis. Do not use typographic/"smart" punctuation.
 - Return ONLY the JSON object described below. No preamble, no markdown
   code fences, no explanation, no <reasoning> or <think> tags.
 
@@ -1133,9 +1146,13 @@ def _rgbcolor_to_reportlab(rgb: RGBColor) -> colors.Color:
 
 # ── Unicode sanitization for PDF (reportlab built-in fonts) ──────────────────
 _PDF_CHAR_MAP = {
+    "\u2010": "-",   # Unicode hyphen → ASCII hyphen
+    "\u2011": "-",   # non-breaking hyphen → hyphen
+    "\u2012": "-",   # figure dash → hyphen
     "\u2013": "-",   # en dash → hyphen
     "\u2014": "-",   # em dash → hyphen
     "\u2015": "-",   # horizontal bar → hyphen
+    "\u2212": "-",   # minus sign → hyphen
     "\u2018": "'",   # left single quote → apostrophe
     "\u2019": "'",   # right single quote → apostrophe
     "\u201C": '"',   # left double quote → double quote
@@ -1144,6 +1161,7 @@ _PDF_CHAR_MAP = {
     "\u00A0": " ",   # non-breaking space → space
     "\u200B": "",    # zero-width space → nothing
     "\u00B7": "*",   # middle dot → asterisk
+    "\u2022": "*",   # bullet → asterisk
     "\uFEFF": "",    # BOM → nothing
 }
 
@@ -1159,6 +1177,12 @@ def _sanitize_for_pdf(obj):
     if isinstance(obj, str):
         for u_char, replacement in _PDF_CHAR_MAP.items():
             obj = obj.replace(u_char, replacement)
+        # Catch-all: anything still outside cp1252 gets transliterated to
+        # its closest ASCII form instead of rendering as a black box.
+        try:
+            obj.encode("cp1252")
+        except UnicodeEncodeError:
+            obj = unicodedata.normalize("NFKD", obj).encode("ascii", "ignore").decode("ascii")
         return obj
     if isinstance(obj, list):
         return [_sanitize_for_pdf(item) for item in obj]
