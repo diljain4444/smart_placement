@@ -1,0 +1,370 @@
+[
+  {
+    "topic": "Communication",
+    "channel": "Indeed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=CIHkuLgeBcA"
+  },
+  {
+    "topic": "Communication",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Communication",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Problem-solving",
+    "channel": "Indeed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=pGYh-_uEef4"
+  },
+  {
+    "topic": "Problem-solving",
+    "channel": "Simplilearn",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://youtu.be/hiqoCvPs_Jc?si=MuptDpWL6bDujvmb"
+  },
+  {
+    "topic": "Problem-solving",
+    "channel": "TutorialsPoint",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://youtu.be/uqhOnXOiwOg?si=kWX0CGiuEyZp1a7j"
+  },
+  {
+    "topic": "Teamwork",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Teamwork",
+    "channel": "CrashCourse",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://youtu.be/fRj7Am63wVc?si=MDh3RU2HxPtLxR1j"
+  },
+  {
+    "topic": "Teamwork",
+    "channel": "TED",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=H0_yKBitO8M"
+  },
+  {
+    "topic": "Leadership",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Leadership",
+    "channel": "Indeed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=zn1CEy4sGR8"
+  },
+  {
+    "topic": "Leadership",
+    "channel": "Indeed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=gvsiYHr573c"
+  },
+  {
+    "topic": "Leadership",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Adaptability",
+    "channel": "TED",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=xJM_CQN8-ns"
+  },
+  {
+    "topic": "Adaptability",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Adaptability",
+    "channel": "Business English For Success",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://youtu.be/RiLiF1V_EFg?si=hOxyGHQnZ372OxXZ"
+  },
+  {
+    "topic": "Time management",
+    "channel": "Thomas Frank",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=xwsLuxlbY2w"
+  },
+  {
+    "topic": "Time management",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Time management",
+    "channel": "TED",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=n3kNlFMXslo"
+  },
+  {
+    "topic": "Critical thinking",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Critical thinking",
+    "channel": "TED-Ed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=dItUGF8GdTw"
+  },
+  {
+    "topic": "Critical thinking",
+    "channel": "CrashCourse",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=NKEhdsnKKHs"
+  },
+  {
+    "topic": "Conflict resolution",
+    "channel": "Indeed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=YVYkSBNnr8s"
+  },
+  {
+    "topic": "Conflict resolution",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Conflict resolution",
+    "channel": "TED",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=PY_kd46RfVE"
+  },
+  {
+    "topic": "Decision-making",
+    "channel": "Indeed",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=2gIaaPT_-Ag"
+  },
+  {
+    "topic": "Decision-making",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Decision-making",
+    "channel": "TED",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=lDq9-QxvsNU"
+  },
+  {
+    "topic": "Accountability",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Accountability",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Accountability",
+    "channel": "TEDx Talks",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=Iyw1dgXUCEI"
+  },
+  {
+    "topic": "Initiative",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Initiative",
+    "channel": "Chrissy Scivicque",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=_ZCakKF_8Kg"
+  },
+  {
+    "topic": "Initiative",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Emotional intelligence",
+    "channel": "TEDx Talks",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=auXNnTmhHsk"
+  },
+  {
+    "topic": "Emotional intelligence",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Emotional intelligence",
+    "channel": "CrashCourse",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=gAMbkJk6gnE"
+  },
+  {
+    "topic": "Resilience",
+    "channel": "TEDx Talks",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/watch?v=NWH8N-BvhAw"
+  },
+  {
+    "topic": "Resilience",
+    "channel": "Oulife",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=kVI1i-sP6Eo"
+  },
+  {
+    "topic": "Resilience",
+    "channel": "DrTraceyMarks",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://youtu.be/34cW5Dzykic?si=2YERaTdo9NF6ks5l"
+  },
+  {
+    "topic": "Learning mindset",
+    "channel": "TED",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=_X0mgOOSpLU"
+  },
+  {
+    "topic": "Learning mindset",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Learning mindset",
+    "channel": "StanfordAlumni",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+  },
+  {
+    "topic": "Professionalism",
+    "channel": "Uplyrn",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLv36TmvHwYwsEzXfNa9see_GzmW8u_Y2i"
+  },
+  {
+    "topic": "Professionalism",
+    "channel": "CrashCourse",
+    "category": "Playlist",
+    "language": "English",
+    "level": "Medium",
+    "url": "https://www.youtube.com/playlist?list=PLH2l6uzC4UEV7F8DJZvvSoAQyPoLAgPm0"
+  },
+  {
+    "topic": "Professionalism",
+    "channel": "Workers Direct",
+    "category": "One Shot",
+    "language": "English",
+    "level": "Easy",
+    "url": "https://www.youtube.com/watch?v=hbHitEEkIzg"
+  }
+]

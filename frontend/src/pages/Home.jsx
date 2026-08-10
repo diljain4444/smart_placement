@@ -44,6 +44,16 @@ export default function Home() {
             </p>
             <Link to="/resume" className="feature-btn">Go to Resume Suite →</Link>
           </div>
+          <div className="feature-card">
+            <span className="feature-icon">📘</span>
+            <h2 className="feature-title">Learning Inception</h2>
+            <p className="feature-desc">
+              Discover curated YouTube resources for technical skills and
+              soft skill development. Browse topics, filter by level, and
+              start learning instantly.
+            </p>
+            <Link to="/learning" className="feature-btn">Start Learning →</Link>
+          </div>
         </div>
       </section>
 

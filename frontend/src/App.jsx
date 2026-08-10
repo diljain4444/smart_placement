@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import MockInterview from './pages/MockInterview'
 import ResumeSuite from './pages/ResumeSuite'
+import LearningInception from './pages/LearningInception'
 
 export default function App() {
   const location = useLocation()
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/interview" element={<MockInterview />} />
           <Route path="/resume" element={<ResumeSuite />} />
+          <Route path="/learning" element={<LearningInception />} />
         </Routes>
       </main>
     </>
