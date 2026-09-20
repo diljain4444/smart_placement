@@ -6,6 +6,7 @@ import MockInterview from './pages/MockInterview'
 import ResumeSuite from './pages/ResumeSuite'
 import LearningInception from './pages/LearningInception'
 import DocQA from './pages/DocQA'
+import Roadmap from './pages/Roadmap'
 
 export default function App() {
   const location = useLocation()
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/resume" element={<ResumeSuite />} />
           <Route path="/learning" element={<LearningInception />} />
           <Route path="/doc-qa" element={<DocQA />} />
+          <Route path="/roadmap" element={<Roadmap />} />
         </Routes>
       </main>
     </>

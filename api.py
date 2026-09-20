@@ -50,6 +50,7 @@ from rag_back import (
     embedding as rag_embedding,
     workflow as rag_workflow,
 )
+from roadmap_backend import generate_roadmap
 from langchain_community.vectorstores import FAISS
 from langchain_community.retrievers import BM25Retriever
 
@@ -795,3 +796,43 @@ async def rag_reset(req: RagResetRequest):
         del rag_sessions[req.session_id]
     return {"status": "ok", "message": "RAG session cleared."}
 
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ROUTES — ROADMAP
+# ══════════════════════════════════════════════════════════════════════════════
+
+class RoadmapRequest(BaseModel):
+    """Student profile data for generating a placement roadmap."""
+    year: Optional[str] = None
+    branch: Optional[str] = None
+    dsa_problems_solved: Optional[str] = None
+    known_skills: Optional[list] = None
+    os_confidence: Optional[str] = None
+    dbms_confidence: Optional[str] = None
+    cn_confidence: Optional[str] = None
+    oops_confidence: Optional[str] = None
+    projects_count: Optional[int] = None
+    certifications: Optional[str] = None
+    target_role: Optional[str] = None
+    company_tier: Optional[str] = None
+    placement_mode: Optional[str] = None
+    dream_companies: Optional[str] = None
+    hours_per_week: Optional[int] = None
+    deadline: Optional[str] = None
+    learning_style: Optional[str] = None
+
+
+@app.post("/api/roadmap/generate")
+async def generate_roadmap_route(req: RoadmapRequest):
+    """Generate a personalised placement preparation roadmap.
+
+    Uses a LangGraph pipeline with gap analysis, phase generation,
+    deadline adjustment, and finalization steps.
+    """
+    try:
+        user_input = req.model_dump(exclude_none=True)
+        result = generate_roadmap(user_input)
+        return result
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(500, f"Roadmap generation failed: {str(e)}")

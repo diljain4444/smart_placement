@@ -110,7 +110,7 @@ export default function DocQA() {
     <div className="docqa-page">
       {phase === 1 && (
         <div className="docqa-upload-phase">
-          <h1>📚 Document Q&A</h1>
+          <h1>Document Q&A</h1>
           <p className="docqa-subtitle">
             Upload a document and ask questions — answers are generated from your document's content using RAG.
           </p>
@@ -166,7 +166,7 @@ export default function DocQA() {
         <div className="docqa-chat-phase">
           <div className="docqa-header">
             <div className="docqa-file-info">
-              📄 {fileInfo.filename} <span className="chunk-badge">({fileInfo.chunkCount} chunks)</span>
+              {fileInfo.filename} <span className="chunk-badge">({fileInfo.chunkCount} chunks)</span>
             </div>
             <button className="end-btn" onClick={handleReset}>
               New Document

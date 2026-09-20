@@ -180,7 +180,7 @@ export default function AvatarPanel({
             <div className="wave-bars">
               {[1,2,3,4,5].map(i => <div key={i} className="wave-bar" style={{ animationDelay: `${i*0.12}s` }} />)}
             </div>
-            <div className="mic-overlay">🎙️</div>
+            <div className="mic-overlay">MIC</div>
           </>
         )}
       </div>
@@ -188,21 +188,21 @@ export default function AvatarPanel({
       {/* Autoplay blocked */}
       {autoplayBlocked && (
         <button className="manual-play-btn" onClick={handleManualPlay}>
-          🚀 Start Interview
+          Start Interview
         </button>
       )}
 
       {/* Replay (visible when not playing and audio exists) */}
       {!autoplayBlocked && hasReplayAudio && currentState === 'new_waiting' && (
         <button className="manual-play-btn" onClick={handleManualPlay}>
-          🔁 Replay Question Audio
+          Replay Question Audio
         </button>
       )}
 
       {/* Status bar */}
       <div className="status-bar">
         <div className="status-info">
-          <div className="status-avatar">👔</div>
+          <div className="status-avatar">SP</div>
           <div>
             <div className="status-name">Sarah Mitchell</div>
             <div className="status-title">Senior Technical Recruiter</div>

@@ -262,14 +262,14 @@ export default function MockInterview() {
 
       {error && (
         <div className="error-message">
-          ⚠️ {error}
+          {error}
           <button style={{ float: 'right', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }} onClick={() => setError(null)}>✕</button>
         </div>
       )}
 
       {/* Step indicators */}
       <div className="page-header">
-        <h1>🎤 Mock Interview</h1>
+        <h1>Mock Interview</h1>
         <p>AI-powered interview practice with real-time feedback</p>
       </div>
 
@@ -288,11 +288,11 @@ export default function MockInterview() {
               <h3>Interview Mode</h3>
               <div className="mode-options">
                 <div className={`mode-option ${interviewMode === 'resume_only' ? 'active' : ''}`} onClick={() => setInterviewMode('resume_only')}>
-                  <strong>📄 Resume Only</strong>
+                  <strong>Resume Only</strong>
                   <p>General interview based on your profile</p>
                 </div>
                 <div className={`mode-option ${interviewMode === 'resume_jd' ? 'active' : ''}`} onClick={() => setInterviewMode('resume_jd')}>
-                  <strong>📋 Resume + JD</strong>
+                  <strong>Resume + JD</strong>
                   <p>Tailored interview for a specific role</p>
                 </div>
               </div>
@@ -308,7 +308,7 @@ export default function MockInterview() {
 
             {/* File upload */}
             <div className="file-upload">
-              <label>📎 Upload your resume (PDF or DOCX)</label>
+              <label>Upload your resume (PDF or DOCX)</label>
               <input type="file" accept=".pdf,.docx" onChange={e => setResumeFile(e.target.files?.[0] || null)} />
               {resumeFile && <div className="file-info">✓ {resumeFile.name}</div>}
             </div>
@@ -321,11 +321,11 @@ export default function MockInterview() {
             {extractedInfo && (
               <>
                 <div className="mode-toggle" style={{ marginTop: '1.5rem' }}>
-                  <button className={`toggle-btn ${voiceMode ? 'active' : ''}`} onClick={() => setVoiceMode(true)}>🎙️ Voice Mode</button>
-                  <button className={`toggle-btn ${!voiceMode ? 'active' : ''}`} onClick={() => setVoiceMode(false)}>⌨️ Text Mode</button>
+                  <button className={`toggle-btn ${voiceMode ? 'active' : ''}`} onClick={() => setVoiceMode(true)}>Voice Mode</button>
+                  <button className={`toggle-btn ${!voiceMode ? 'active' : ''}`} onClick={() => setVoiceMode(false)}>Text Mode</button>
                 </div>
                 <button className="generate-btn" onClick={handleStartInterview} disabled={loading} style={{ marginTop: '1rem' }}>
-                  🚀 Start Interview
+                  Start Interview
                 </button>
               </>
             )}
@@ -334,19 +334,19 @@ export default function MockInterview() {
           {/* Profile card (right side) */}
           {extractedInfo && (
             <div className="profile-card">
-              <h3>📋 Extracted Profile</h3>
+              <h3>Extracted Profile</h3>
               <div className="profile-section">
-                <h4>🎓 Education</h4>
+                <h4>Education</h4>
                 <p>{extractedInfo.education}</p>
               </div>
               <div className="profile-section">
-                <h4>🛠️ Skills</h4>
+                <h4>Skills</h4>
                 <div className="skill-tags">
                   {(extractedInfo.skills || []).map((s, i) => <span key={i} className="skill-tag">{s}</span>)}
                 </div>
               </div>
               <div className="profile-section">
-                <h4>🚀 Projects</h4>
+                <h4>Projects</h4>
                 <div className="skill-tags">
                   {(extractedInfo.projects || []).map((p, i) => <span key={i} className="project-tag">{p}</span>)}
                 </div>
@@ -377,7 +377,7 @@ export default function MockInterview() {
             {/* Audio error notice */}
             {audioError && (
               <div className="error-message" style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.3)', color: '#FCD34D' }}>
-                🔇 {audioError}
+                {audioError}
                 <button style={{ float: 'right', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }} onClick={() => setAudioError('')}>✕</button>
               </div>
             )}
@@ -413,7 +413,7 @@ export default function MockInterview() {
                     onClick={isRecording ? stopRecording : startRecording}
                     disabled={loading}
                   >
-                    {isRecording ? '⏹️' : '🎙️'}
+                    {isRecording ? '■' : '●'}
                   </button>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
                     {isRecording ? 'Recording… Click to stop' : 'Click to start recording'}
@@ -439,7 +439,7 @@ export default function MockInterview() {
 
             {/* End interview */}
             <button className="end-btn" onClick={handleEndInterview} disabled={topicCount < 3 || loading}>
-              {topicCount < 3 ? `Cover ${3 - topicCount} more topic(s) to end` : '🏁 End Interview'}
+              {topicCount < 3 ? `Cover ${3 - topicCount} more topic(s) to end` : 'End Interview'}
             </button>
           </div>
         </div>
@@ -449,12 +449,12 @@ export default function MockInterview() {
       {step === 'report' && report && (
         <div>
           <div className="done-banner">
-            <h2>🎉 Interview Complete!</h2>
+            <h2>Interview Complete</h2>
             <p>Great job! Review your detailed performance report below.</p>
           </div>
           <InterviewReport report={report} />
           <button className="new-interview-btn" onClick={handleNewInterview}>
-            🔄 Start New Interview
+            Start New Interview
           </button>
         </div>
       )}

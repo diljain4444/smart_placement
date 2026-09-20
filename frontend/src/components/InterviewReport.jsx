@@ -37,7 +37,7 @@ export default function InterviewReport({ report }) {
   return (
     <div className="report-dashboard">
       <div className="report-header">
-        <h2>📊 Interview Performance Report</h2>
+        <h2>Interview Performance Report</h2>
         <p>Your detailed AI-powered analysis</p>
       </div>
 
@@ -61,7 +61,7 @@ export default function InterviewReport({ report }) {
       {/* ── Topic Ratings ───────────────────────────────────────────────── */}
       {r.topic && r.topic.length > 0 && (
         <div className="topic-ratings">
-          <h3 className="section-heading">📊 Topic Ratings</h3>
+          <h3 className="section-heading">Topic Ratings</h3>
           {r.topic.map((t, i) => {
             const pct = Math.min(100, (t.rating ?? 0) * 10)
             const clr = barColor(t.rating ?? 0)
@@ -84,7 +84,7 @@ export default function InterviewReport({ report }) {
 
       {/* ── Score Summary Bar Chart ─────────────────────────────────────── */}
       <div className="chart-section">
-        <h3 className="section-heading">📈 Score Summary</h3>
+        <h3 className="section-heading">Score Summary</h3>
         <div className="bar-chart">
           {[
             { label: 'Overall', value: r.overall_rating, color: '#3B6BE8' },
@@ -105,12 +105,12 @@ export default function InterviewReport({ report }) {
       {/* ── Topic Analysis ──────────────────────────────────────────────── */}
       {r.topic && r.topic.length > 0 && (
         <div className="analysis-section">
-          <h3 className="section-heading">🔍 Topic Analysis</h3>
+          <h3 className="section-heading">Topic Analysis</h3>
           {r.topic.map((t, i) => {
-            const icon = t.rating >= 7 ? '🟢' : t.rating >= 5 ? '🟡' : '🔴'
+            const icon = '●'
             return (
               <Expandable key={i} title={`${icon}  ${t.topic_name}  —  ${(t.rating ?? 0).toFixed(1)} / 10`}>
-                <p>💡 <strong>Key Gap:</strong> {t.weakness}</p>
+                <p><strong>Key Gap:</strong> {t.weakness}</p>
               </Expandable>
             )
           })}
@@ -120,15 +120,15 @@ export default function InterviewReport({ report }) {
       {/* ── Strengths & Weaknesses ──────────────────────────────────────── */}
       <div className="strengths-weaknesses">
         <div className="sw-column">
-          <h3 className="sw-title">💪 Strengths</h3>
+          <h3 className="sw-title">Strengths</h3>
           {(r.overall_strength || []).map((s, i) => (
-            <div key={i} className="strength-item">✅ {s}</div>
+            <div key={i} className="strength-item">{s}</div>
           ))}
         </div>
         <div className="sw-column">
-          <h3 className="sw-title">⚠️ Areas to Improve</h3>
+          <h3 className="sw-title">Areas to Improve</h3>
           {(r.overall_weakness || []).map((w, i) => (
-            <div key={i} className="weakness-item">⚡ {w}</div>
+            <div key={i} className="weakness-item">{w}</div>
           ))}
         </div>
       </div>
@@ -136,9 +136,9 @@ export default function InterviewReport({ report }) {
       {/* ── Recommendations ─────────────────────────────────────────────── */}
       {r.top_recommendation && r.top_recommendation.length > 0 && (
         <div className="recommendations">
-          <h3 className="section-heading">💡 Top Recommendations</h3>
+          <h3 className="section-heading">Top Recommendations</h3>
           {r.top_recommendation.map((rec, i) => (
-            <div key={i} className="rec-item">🔹 <strong>{i + 1}.</strong> {rec}</div>
+            <div key={i} className="rec-item"><strong>{i + 1}.</strong> {rec}</div>
           ))}
         </div>
       )}
@@ -146,9 +146,9 @@ export default function InterviewReport({ report }) {
       {/* ── Learning Roadmap ────────────────────────────────────────────── */}
       {r.road_map && r.road_map.length > 0 && (
         <div className="roadmap-section">
-          <h3 className="section-heading">🗺️ Personalised Learning Roadmap</h3>
+          <h3 className="section-heading">Personalised Learning Roadmap</h3>
           {r.road_map.map((rm, i) => (
-            <Expandable key={i} title={`📚  ${rm.topic_name}  ·  ⏱ ${rm.duration_it_takes}`}>
+            <Expandable key={i} title={`${rm.topic_name}  ·  ${rm.duration_it_takes}`}>
               <div className="roadmap-content">
                 <div>
                   <strong>Concepts to Learn:</strong>

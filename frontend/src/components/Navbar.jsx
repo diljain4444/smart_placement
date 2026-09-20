@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <NavLink to="/" className="navbar-brand" onClick={() => setIsOpen(false)}>
-        🎯 Smart Placement
+        Smart Placement
       </NavLink>
       <button className="hamburger" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
         {isOpen ? '✕' : '☰'}
@@ -18,6 +18,7 @@ export default function Navbar() {
         <NavLink to="/resume" className="nav-link" onClick={() => setIsOpen(false)}>Resume Suite</NavLink>
         <NavLink to="/learning" className="nav-link" onClick={() => setIsOpen(false)}>Learning</NavLink>
         <NavLink to="/doc-qa" className="nav-link" onClick={() => setIsOpen(false)}>Doc Q&A</NavLink>
+        <NavLink to="/roadmap" className="nav-link" onClick={() => setIsOpen(false)}>Roadmap</NavLink>
       </div>
     </nav>
   )
