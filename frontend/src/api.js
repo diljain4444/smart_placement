@@ -25,3 +25,6 @@ export const extractText = (formData) => api.post('/api/resume/extract-text', fo
 export const ragUpload = (formData) => api.post('/api/rag/upload', formData);
 export const ragAsk = (data) => api.post('/api/rag/ask', data);
 export const ragReset = (data) => api.post('/api/rag/reset', data);
+
+// Roadmap
+export const generateRoadmapApi = (data) => api.post('/api/roadmap/generate', data);

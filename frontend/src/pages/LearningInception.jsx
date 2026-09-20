@@ -111,7 +111,7 @@ export default function LearningInception() {
           className={`li-bread-item ${view === 'landing' ? 'active' : ''}`}
           onClick={() => { setView('landing'); setSection(null); setSelectedTopic(null) }}
         >
-          📘 Learning Inception
+          Learning Inception
         </button>
         {view !== 'landing' && (
           <>
@@ -136,7 +136,7 @@ export default function LearningInception() {
       {view === 'landing' && (
         <>
           <div className="li-header">
-            <h1 className="li-title">📘 Learning Inception</h1>
+            <h1 className="li-title">Learning Inception</h1>
             <p className="li-subtitle">
               Discover curated learning resources and start your learning journey today.
             </p>
@@ -144,7 +144,7 @@ export default function LearningInception() {
 
           <div className="li-sections-grid">
             <div className="li-section-card" onClick={() => openSection('technical')} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && openSection('technical')}>
-              <span className="li-section-icon">💻</span>
+              <span className="li-section-icon">T</span>
               <h2 className="li-section-title">Technical Skills</h2>
               <p className="li-section-desc">
                 Learn core computer science, programming, AI, development and other technical subjects.
@@ -153,7 +153,7 @@ export default function LearningInception() {
               <span className="li-section-action">Explore →</span>
             </div>
             <div className="li-section-card" onClick={() => openSection('soft')} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && openSection('soft')}>
-              <span className="li-section-icon">🤝</span>
+              <span className="li-section-icon">S</span>
               <h2 className="li-section-title">Soft Skill Development</h2>
               <p className="li-section-desc">
                 Improve communication, interview skills, personality development and other professional skills.
@@ -170,7 +170,7 @@ export default function LearningInception() {
         <>
           <div className="li-header">
             <button className="li-back-btn" onClick={goBack}>← Back</button>
-            <h1 className="li-title">{section === 'technical' ? '💻' : '🤝'} {sectionLabel}</h1>
+            <h1 className="li-title">{sectionLabel}</h1>
             <p className="li-subtitle">
               {topics.length} topics · {currentData.length} resources
             </p>
@@ -215,7 +215,7 @@ export default function LearningInception() {
             </div>
           ) : (
             <div className="li-empty">
-              <span className="li-empty-icon">🔍</span>
+              <span className="li-empty-icon">—</span>
               <p className="li-empty-text">No resources match the selected filters.</p>
               <button
                 className="li-empty-reset"

@@ -5,19 +5,19 @@ export default function Home() {
     <div className="home-page">
       {/* Hero */}
       <section className="hero">
-        <h1 className="hero-title">🎯 Smart Placement</h1>
+        <h1 className="hero-title">Smart Placement</h1>
         <p className="hero-subtitle">
           Your AI-powered companion for interview preparation and resume building.
           Practice with a realistic avatar, get instant feedback, and craft ATS-optimized resumes.
         </p>
         <div className="hero-cta">
-          <Link to="/interview" className="cta-btn">🎤 Start Mock Interview</Link>
-          <Link to="/resume" className="cta-btn cta-btn-secondary">📄 Resume Suite</Link>
+          <Link to="/interview" className="cta-btn">Start Mock Interview</Link>
+          <Link to="/resume" className="cta-btn cta-btn-secondary">Resume Suite</Link>
         </div>
         <div className="hero-stats">
-          <div><div className="hero-stat-num">🚀</div><div className="hero-stat-label">AI Powered</div></div>
-          <div><div className="hero-stat-num">🎙️</div><div className="hero-stat-label">Voice Enabled</div></div>
-          <div><div className="hero-stat-num">📊</div><div className="hero-stat-label">ATS Optimized</div></div>
+          <div><div className="hero-stat-num">AI</div><div className="hero-stat-label">AI Powered</div></div>
+          <div><div className="hero-stat-num">Voice</div><div className="hero-stat-label">Voice Enabled</div></div>
+          <div><div className="hero-stat-num">ATS</div><div className="hero-stat-label">ATS Optimized</div></div>
         </div>
       </section>
 
@@ -25,44 +25,54 @@ export default function Home() {
       <section className="features-section">
         <div className="features-grid">
           <div className="feature-card">
-            <span className="feature-icon">🎤</span>
+            <span className="feature-icon">M</span>
             <h2 className="feature-title">Mock Interview</h2>
             <p className="feature-desc">
               Practice with our AI interviewer avatar using voice or text.
               Get real-time feedback, topic-by-topic analysis, and a personalised
               learning roadmap after each session.
             </p>
-            <Link to="/interview" className="feature-btn">Try Mock Interview →</Link>
+            <Link to="/interview" className="feature-btn">Try Mock Interview</Link>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">📄</span>
+            <span className="feature-icon">R</span>
             <h2 className="feature-title">Resume Suite</h2>
             <p className="feature-desc">
               Build professional resumes from scratch, modify them for specific
               job descriptions, and rate them against ATS scoring systems —
               all powered by AI.
             </p>
-            <Link to="/resume" className="feature-btn">Go to Resume Suite →</Link>
+            <Link to="/resume" className="feature-btn">Go to Resume Suite</Link>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">📘</span>
+            <span className="feature-icon">L</span>
             <h2 className="feature-title">Learning Inception</h2>
             <p className="feature-desc">
               Discover curated YouTube resources for technical skills and
               soft skill development. Browse topics, filter by level, and
               start learning instantly.
             </p>
-            <Link to="/learning" className="feature-btn">Start Learning →</Link>
+            <Link to="/learning" className="feature-btn">Start Learning</Link>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">📚</span>
+            <span className="feature-icon">D</span>
             <h2 className="feature-title">Document Q&A</h2>
             <p className="feature-desc">
               Upload any document — PDF, DOCX, CSV, or text — and ask
               questions. Our RAG-powered AI retrieves answers directly
               from your document's content.
             </p>
-            <Link to="/doc-qa" className="feature-btn">Try Doc Q&A →</Link>
+            <Link to="/doc-qa" className="feature-btn">Try Doc Q&A</Link>
+          </div>
+          <div className="feature-card">
+            <span className="feature-icon">P</span>
+            <h2 className="feature-title">Placement Roadmap</h2>
+            <p className="feature-desc">
+              Get a personalised, AI-generated placement preparation roadmap
+              tailored to your current skills, target role, and timeline.
+              Phase-by-phase guidance with milestones and projects.
+            </p>
+            <Link to="/roadmap" className="feature-btn">Generate Roadmap</Link>
           </div>
         </div>
       </section>

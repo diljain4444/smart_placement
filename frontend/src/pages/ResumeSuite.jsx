@@ -65,7 +65,7 @@ export default function ResumeSuite() {
       const blob = new Blob([res.data], { type: 'application/pdf' })
       const name = (builderData.name || 'Resume').replace(/\s+/g, '_')
       downloadPdf(blob, `${name}_Resume.pdf`)
-      setBuilderSuccess('✅ Resume generated and downloaded!')
+      setBuilderSuccess('Resume generated and downloaded!')
     } catch (err) {
       setBuilderError(err.response?.data?.detail || 'Resume generation failed.')
     } finally { setBuilderLoading(false) }
@@ -108,7 +108,7 @@ export default function ResumeSuite() {
       const res = await modifyResume(fd)
       const blob = new Blob([res.data], { type: 'application/pdf' })
       downloadPdf(blob, 'Modified_Resume.pdf')
-      setModSuccess('✅ Modified resume downloaded!')
+      setModSuccess('Modified resume downloaded!')
     } catch (err) {
       setModError(err.response?.data?.detail || 'Resume modification failed.')
     } finally { setModLoading(false) }
@@ -161,7 +161,7 @@ export default function ResumeSuite() {
   return (
     <div className="resume-page">
       <div className="page-header">
-        <h1>📄 Resume Suite</h1>
+        <h1>Resume Suite</h1>
         <p>Build, modify, and rate your resume with AI</p>
       </div>
 
@@ -169,7 +169,7 @@ export default function ResumeSuite() {
       <div className="tab-bar">
         {['builder', 'modifier', 'rater'].map(t => (
           <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>
-            {t === 'builder' ? '🔨 Builder' : t === 'modifier' ? '✏️ Modifier' : '⭐ Rater'}
+            {t === 'builder' ? 'Builder' : t === 'modifier' ? 'Modifier' : 'Rater'}
           </button>
         ))}
       </div>
@@ -181,7 +181,7 @@ export default function ResumeSuite() {
           {builderError && <div className="error-message">{builderError}</div>}
           {builderSuccess && <div className="success-message">{builderSuccess}</div>}
           <button className="generate-btn" onClick={handleBuild} disabled={builderLoading}>
-            {builderLoading ? 'Generating…' : '🚀 Generate Resume PDF'}
+            {builderLoading ? 'Generating…' : 'Generate Resume PDF'}
           </button>
           {builderLoading && <Loading message="AI is crafting your resume…" />}
         </div>
@@ -191,8 +191,8 @@ export default function ResumeSuite() {
       {activeTab === 'modifier' && (
         <div className="tab-content">
           <div className="input-toggle">
-            <button className={`toggle-option ${modInputMode === 'upload' ? 'active' : ''}`} onClick={() => setModInputMode('upload')}>📎 Upload Resume</button>
-            <button className={`toggle-option ${modInputMode === 'form' ? 'active' : ''}`} onClick={() => setModInputMode('form')}>📝 Fill Form</button>
+            <button className={`toggle-option ${modInputMode === 'upload' ? 'active' : ''}`} onClick={() => setModInputMode('upload')}>Upload Resume</button>
+            <button className={`toggle-option ${modInputMode === 'form' ? 'active' : ''}`} onClick={() => setModInputMode('form')}>Fill Form</button>
           </div>
 
           {modInputMode === 'upload' ? (
@@ -221,7 +221,7 @@ export default function ResumeSuite() {
           {modError && <div className="error-message">{modError}</div>}
           {modSuccess && <div className="success-message">{modSuccess}</div>}
           <button className="generate-btn" onClick={handleModify} disabled={modLoading}>
-            {modLoading ? 'Generating…' : '🚀 Generate Modified Resume'}
+            {modLoading ? 'Generating…' : 'Generate Modified Resume'}
           </button>
           {modLoading && <Loading message="AI is rewriting your resume for this role…" />}
         </div>
@@ -231,8 +231,8 @@ export default function ResumeSuite() {
       {activeTab === 'rater' && (
         <div className="tab-content">
           <div className="input-toggle">
-            <button className={`toggle-option ${raterInputMode === 'paste' ? 'active' : ''}`} onClick={() => setRaterInputMode('paste')}>📋 Paste Text</button>
-            <button className={`toggle-option ${raterInputMode === 'upload' ? 'active' : ''}`} onClick={() => setRaterInputMode('upload')}>📎 Upload File</button>
+            <button className={`toggle-option ${raterInputMode === 'paste' ? 'active' : ''}`} onClick={() => setRaterInputMode('paste')}>Paste Text</button>
+            <button className={`toggle-option ${raterInputMode === 'upload' ? 'active' : ''}`} onClick={() => setRaterInputMode('upload')}>Upload File</button>
           </div>
 
           {raterInputMode === 'paste' ? (
@@ -257,7 +257,7 @@ export default function ResumeSuite() {
 
           {raterError && <div className="error-message">{raterError}</div>}
           <button className="generate-btn" onClick={handleRate} disabled={raterLoading}>
-            {raterLoading ? 'Rating…' : '⭐ Rate My Resume'}
+            {raterLoading ? 'Rating…' : 'Rate My Resume'}
           </button>
           {raterLoading && <Loading message="Analyzing your resume against the job description…" />}
 
@@ -297,7 +297,7 @@ export default function ResumeSuite() {
               {/* Recruiter Summary */}
               {llm.summary_feedback && (
                 <div className="rating-section">
-                  <h4 className="rating-title">📝 Recruiter Summary</h4>
+                  <h4 className="rating-title">Recruiter Summary</h4>
                   <p>{llm.summary_feedback}</p>
                 </div>
               )}
@@ -305,37 +305,37 @@ export default function ResumeSuite() {
               {/* Strengths */}
               {llm.strengths?.length > 0 && (
                 <div className="rating-section">
-                  <h4 className="rating-title">💪 Strengths</h4>
-                  {llm.strengths.map((s, i) => <div key={i} className="strength-item">✅ {s}</div>)}
+                  <h4 className="rating-title">Strengths</h4>
+                  {llm.strengths.map((s, i) => <div key={i} className="strength-item">• {s}</div>)}
                 </div>
               )}
 
               {/* Weaknesses */}
               {llm.weaknesses?.length > 0 && (
                 <div className="rating-section">
-                  <h4 className="rating-title">⚠️ Weaknesses</h4>
-                  {llm.weaknesses.map((w, i) => <div key={i} className="weakness-item">⚡ {w}</div>)}
+                  <h4 className="rating-title">Weaknesses</h4>
+                  {llm.weaknesses.map((w, i) => <div key={i} className="weakness-item">• {w}</div>)}
                 </div>
               )}
 
               {/* Suggestions */}
               {llm.suggestions?.length > 0 && (
                 <div className="rating-section">
-                  <h4 className="rating-title">💡 Suggestions</h4>
-                  {llm.suggestions.map((s, i) => <div key={i} className="suggestion-item">🔹 {s}</div>)}
+                  <h4 className="rating-title">Suggestions</h4>
+                  {llm.suggestions.map((s, i) => <div key={i} className="suggestion-item">• {s}</div>)}
                 </div>
               )}
 
               {/* Keywords */}
               <div className="rating-section">
-                <h4 className="rating-title">🔑 Matched Keywords</h4>
+                <h4 className="rating-title">Matched Keywords</h4>
                 <div className="keyword-list">
                   {(sim.matched_keywords || []).map((k, i) => <span key={i} className="keyword-tag matched">{k}</span>)}
                   {(!sim.matched_keywords || sim.matched_keywords.length === 0) && <span style={{ color: 'var(--text-muted)' }}>None found</span>}
                 </div>
               </div>
               <div className="rating-section">
-                <h4 className="rating-title">❌ Missing Keywords</h4>
+                <h4 className="rating-title">Missing Keywords</h4>
                 <div className="keyword-list">
                   {(sim.missing_keywords || []).map((k, i) => <span key={i} className="keyword-tag missing">{k}</span>)}
                   {(!sim.missing_keywords || sim.missing_keywords.length === 0) && <span style={{ color: 'var(--text-muted)' }}>None — great match!</span>}
