@@ -944,3 +944,284 @@ h1,h2,h3,h4,h5,h6 {
   .li-filter-pill { padding: 5px 10px; font-size: 0.75rem; }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════════
+   DOC Q&A PAGE
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.docqa-page {
+  padding-top: 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-bottom: 4rem;
+  min-height: 100vh;
+}
+
+.docqa-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--bg-surface);
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+
+.docqa-upload-zone:hover,
+.docqa-upload-zone.dragover {
+  border-color: var(--accent);
+  background: rgba(91, 141, 239, 0.04);
+}
+
+.docqa-upload-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.docqa-upload-text {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+
+.docqa-upload-hint {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.docqa-file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.docqa-file-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.docqa-chunk-count {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.docqa-chat {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  min-height: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.docqa-msg {
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  max-width: 85%;
+  animation: fadeIn 0.3s ease;
+  word-wrap: break-word;
+}
+
+.docqa-msg-user {
+  background: linear-gradient(135deg, #1E3A6E, #2D5BE3);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.docqa-msg-ai {
+  background: linear-gradient(135deg, #080E1E, #0D1A3A);
+  color: #D8E8FF;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #1A3060;
+}
+
+.docqa-answer-content {
+  line-height: 1.7;
+}
+
+.docqa-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.docqa-input-row .form-input {
+  flex: 1;
+}
+
+.docqa-input-row .submit-btn {
+  width: auto;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.docqa-thinking {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.8rem 1.2rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-style: italic;
+  align-self: flex-start;
+}
+
+.docqa-thinking-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.docqa-thinking-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.4s infinite;
+}
+
+.docqa-thinking-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.docqa-thinking-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.docqa-placeholder {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.docqa-placeholder-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+.docqa-selected-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1rem;
+  padding: 8px 14px;
+  background: rgba(91, 141, 239, 0.08);
+  border: 1px solid rgba(91, 141, 239, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.docqa-upload-phase h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.docqa-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.docqa-actions {
+  margin-top: 1.5rem;
+}
+
+.docqa-file-selected p,
+.docqa-file-prompt p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-bottom: 0.3rem;
+}
+
+.docqa-file-selected strong {
+  color: var(--accent);
+}
+
+.docqa-file-types {
+  font-size: 0.8rem !important;
+  opacity: 0.7;
+}
+
+.docqa-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.docqa-header .docqa-file-info {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.docqa-header .end-btn {
+  width: auto;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.chunk-badge {
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+.docqa-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .docqa-msg {
+    max-width: 95%;
+  }
+  .docqa-upload-zone {
+    padding: 2rem 1rem;
+  }
+  .docqa-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+

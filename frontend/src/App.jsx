@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import MockInterview from './pages/MockInterview'
 import ResumeSuite from './pages/ResumeSuite'
 import LearningInception from './pages/LearningInception'
+import DocQA from './pages/DocQA'
 
 export default function App() {
   const location = useLocation()
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/interview" element={<MockInterview />} />
           <Route path="/resume" element={<ResumeSuite />} />
           <Route path="/learning" element={<LearningInception />} />
+          <Route path="/doc-qa" element={<DocQA />} />
         </Routes>
       </main>
     </>

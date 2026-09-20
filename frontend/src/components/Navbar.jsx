@@ -17,6 +17,7 @@ export default function Navbar() {
         <NavLink to="/interview" className="nav-link" onClick={() => setIsOpen(false)}>Mock Interview</NavLink>
         <NavLink to="/resume" className="nav-link" onClick={() => setIsOpen(false)}>Resume Suite</NavLink>
         <NavLink to="/learning" className="nav-link" onClick={() => setIsOpen(false)}>Learning</NavLink>
+        <NavLink to="/doc-qa" className="nav-link" onClick={() => setIsOpen(false)}>Doc Q&A</NavLink>
       </div>
     </nav>
   )

@@ -54,6 +54,16 @@ export default function Home() {
             </p>
             <Link to="/learning" className="feature-btn">Start Learning →</Link>
           </div>
+          <div className="feature-card">
+            <span className="feature-icon">📚</span>
+            <h2 className="feature-title">Document Q&A</h2>
+            <p className="feature-desc">
+              Upload any document — PDF, DOCX, CSV, or text — and ask
+              questions. Our RAG-powered AI retrieves answers directly
+              from your document's content.
+            </p>
+            <Link to="/doc-qa" className="feature-btn">Try Doc Q&A →</Link>
+          </div>
         </div>
       </section>
 

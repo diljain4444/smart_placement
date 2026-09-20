@@ -46,6 +46,11 @@ pdfminer.six==20260107
 pillow==12.1.1
 pytesseract==0.3.13
 
+# ── RAG (Document Q&A) ────────────────────────────────────────────────────────
+langchain-huggingface>=0.2.0
+faiss-cpu>=1.7.0
+rank-bm25>=0.2.2
+
 # ── HTTP / async utils ────────────────────────────────────────────────────────
 httpx==0.28.1
 aiohttp==3.13.3

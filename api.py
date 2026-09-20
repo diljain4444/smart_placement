@@ -45,6 +45,13 @@ from resume_backend import (
     resume_to_pdf,
     extract_resume_content,
 )
+from rag_back import (
+    preprocess as rag_preprocess,
+    embedding as rag_embedding,
+    workflow as rag_workflow,
+)
+from langchain_community.vectorstores import FAISS
+from langchain_community.retrievers import BM25Retriever
 
 # ══════════════════════════════════════════════════════════════════════════════
 # APP SETUP
@@ -85,6 +92,11 @@ if os.path.isdir(ASSETS_DIR):
 # college demo / single-machine setup this is perfectly fine.
 
 interview_sessions: dict = {}
+
+# ── RAG Document Q&A session store ────────────────────────────────────────────
+# Each key is a session_id (UUID), each value stores the FAISS retriever,
+# BM25 retriever, filename, and chunk count for a user's uploaded document.
+rag_sessions: dict = {}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -674,3 +686,112 @@ async def extract_text_route(
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(500, f"Text extraction failed: {str(e)}")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ROUTES — RAG DOCUMENT Q&A
+# ══════════════════════════════════════════════════════════════════════════════
+
+class RagAskRequest(BaseModel):
+    """Submit a question against an uploaded document."""
+    session_id: str
+    question: str
+
+
+class RagResetRequest(BaseModel):
+    """Reset / delete a RAG session."""
+    session_id: str
+
+
+@app.post("/api/rag/upload")
+async def rag_upload(file: UploadFile = File(...)):
+    """Upload a document, chunk it, and build FAISS + BM25 indexes.
+
+    Returns a session_id that the client uses for subsequent /ask calls.
+    """
+    allowed = {"pdf", "docx", "csv", "txt", "png", "jpg", "jpeg"}
+    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+    if ext not in allowed:
+        raise HTTPException(
+            400,
+            f"Unsupported file type '.{ext}'. Allowed: {', '.join(sorted(allowed))}",
+        )
+
+    tmp_path = None
+    try:
+        # Save uploaded file to a temp location
+        tmp_path = _safe_temp_write(file)
+
+        # Chunk the document using the existing rag_back pipeline
+        chunks = rag_preprocess(tmp_path)
+
+        if not chunks:
+            raise HTTPException(400, "No text could be extracted from the document.")
+
+        # Build FAISS vector store
+        faiss_store = FAISS.from_documents(chunks, rag_embedding)
+        faiss_retriever = faiss_store.as_retriever(search_kwargs={"k": 5})
+
+        # Build BM25 retriever
+        bm25_retriever = BM25Retriever.from_documents(chunks, k=5)
+
+        # Store in session
+        session_id = str(uuid.uuid4())
+        rag_sessions[session_id] = {
+            "retriever": faiss_retriever,
+            "bm25": bm25_retriever,
+            "filename": file.filename,
+            "chunk_count": len(chunks),
+        }
+
+        return {
+            "session_id": session_id,
+            "filename": file.filename,
+            "chunk_count": len(chunks),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(500, f"Document processing failed: {str(e)}")
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+
+
+@app.post("/api/rag/ask")
+async def rag_ask(req: RagAskRequest):
+    """Ask a question against a previously uploaded document.
+
+    Runs the full RAG LangGraph workflow (multi-query → hybrid search →
+    merge → re-rank → answer generation).
+    """
+    session = rag_sessions.get(req.session_id)
+    if not session:
+        raise HTTPException(404, "RAG session not found. Please upload a document first.")
+
+    try:
+        result = rag_workflow.invoke({
+            "query": req.question,
+            "retriever": session["retriever"],
+            "bm25": session["bm25"],
+        })
+
+        return {
+            "answer": result.get("answer", "No answer could be generated."),
+            "question": req.question,
+        }
+
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(500, f"Question answering failed: {str(e)}")
+
+
+@app.post("/api/rag/reset")
+async def rag_reset(req: RagResetRequest):
+    """Delete a RAG session so the user can upload a new document."""
+    if req.session_id in rag_sessions:
+        del rag_sessions[req.session_id]
+    return {"status": "ok", "message": "RAG session cleared."}
+
