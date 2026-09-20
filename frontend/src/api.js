@@ -20,3 +20,8 @@ export const buildResume = (formData) => api.post('/api/resume/build', formData,
 export const modifyResume = (formData) => api.post('/api/resume/modify', formData, { responseType: 'blob' });
 export const rateResume = (formData) => api.post('/api/resume/rate', formData);
 export const extractText = (formData) => api.post('/api/resume/extract-text', formData);
+
+// RAG Document Q&A
+export const ragUpload = (formData) => api.post('/api/rag/upload', formData);
+export const ragAsk = (data) => api.post('/api/rag/ask', data);
+export const ragReset = (data) => api.post('/api/rag/reset', data);
