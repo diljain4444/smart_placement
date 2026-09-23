@@ -163,7 +163,7 @@ export default function AvatarPanel({
 
         {/* Name tag */}
         <div className="name-tag">
-          <div className="name-tag-name">Sarah Mitchell</div>
+          <div className="name-tag-name">James Cooper</div>
           <div className="name-tag-title">Senior Technical Recruiter</div>
         </div>
 
@@ -204,7 +204,7 @@ export default function AvatarPanel({
         <div className="status-info">
           <div className="status-avatar">SP</div>
           <div>
-            <div className="status-name">Sarah Mitchell</div>
+            <div className="status-name">James Cooper</div>
             <div className="status-title">Senior Technical Recruiter</div>
           </div>
         </div>

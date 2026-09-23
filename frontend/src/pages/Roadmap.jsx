@@ -36,6 +36,7 @@ export default function Roadmap() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
+  const [customSkillInput, setCustomSkillInput] = useState('')
 
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }))
 
@@ -46,6 +47,14 @@ export default function Roadmap() {
         ? prev.known_skills.filter(s => s !== skill)
         : [...prev.known_skills, skill],
     }))
+  }
+
+  const addCustomSkill = () => {
+    const skill = customSkillInput.trim()
+    if (skill && !form.known_skills.includes(skill)) {
+      setForm(prev => ({ ...prev, known_skills: [...prev.known_skills, skill] }))
+    }
+    setCustomSkillInput('')
   }
 
   const handleSubmit = async (e) => {
@@ -226,6 +235,29 @@ export default function Roadmap() {
                   {skill}
                 </button>
               ))}
+              {/* Show custom-added skills that aren't in SKILL_OPTIONS */}
+              {form.known_skills
+                .filter(s => !SKILL_OPTIONS.includes(s))
+                .map(skill => (
+                  <button
+                    type="button"
+                    key={skill}
+                    className="rm-skill-pill active"
+                    onClick={() => toggleSkill(skill)}
+                  >
+                    {skill} ×
+                  </button>
+                ))}
+            </div>
+            <div className="rm-custom-skill-row">
+              <input
+                className="form-input"
+                placeholder="Type a skill and press Enter…"
+                value={customSkillInput}
+                onChange={e => setCustomSkillInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomSkill() } }}
+              />
+              <button type="button" className="rm-add-skill-btn" onClick={addCustomSkill}>Add</button>
             </div>
           </div>
 
