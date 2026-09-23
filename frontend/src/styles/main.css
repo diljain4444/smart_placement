@@ -1182,6 +1182,26 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--accent-subtle); color: var(--accent); border-color: var(--accent);
 }
 
+.rm-custom-skill-row {
+  display: flex; gap: 8px; margin-top: 8px;
+}
+.rm-custom-skill-row .form-input {
+  flex: 1; min-width: 0;
+}
+.rm-add-skill-btn {
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem; font-weight: 600;
+  border: 1px solid var(--accent);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.rm-add-skill-btn:hover {
+  background: var(--accent); color: #fff;
+}
 .rm-conf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
 .rm-conf-item { display: flex; flex-direction: column; gap: 3px; }
 .rm-conf-label {

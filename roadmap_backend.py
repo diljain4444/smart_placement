@@ -109,6 +109,15 @@ def _weeks_until(deadline_str: Optional[str]) -> Optional[int]:
 def analyze_gap(state: RoadmapState) -> RoadmapState:
     llm = get_llm(temperature=0.3)
     profile_text = _profile_to_text(state["user_profile"])
+    available_weeks = state.get("available_weeks")
+
+    deadline_note = ""
+    if available_weeks:
+        deadline_note = (
+            f"\n\nIMPORTANT: The student has only {available_weeks} weeks until their "
+            f"placement deadline. Factor this tight timeline into your gap assessment — "
+            f"highlight which gaps are most critical to address in the limited time available."
+        )
 
     messages = [
         SystemMessage(content=(
@@ -116,6 +125,7 @@ def analyze_gap(state: RoadmapState) -> RoadmapState:
             "Given a student's current profile and target role, write a crisp 2-3 sentence "
             "gap summary: what they already have going for them, and the biggest gaps "
             "between their current level and their target. Be specific and honest, not generic."
+            + deadline_note
         )),
         HumanMessage(content=f"Student profile:\n{profile_text}"),
     ]
@@ -131,6 +141,27 @@ def analyze_gap(state: RoadmapState) -> RoadmapState:
 def generate_phases(state: RoadmapState) -> RoadmapState:
     llm = get_llm(temperature=0.4).with_structured_output(RoadmapPlanOutput)
     profile_text = _profile_to_text(state["user_profile"])
+    available_weeks = state.get("available_weeks")
+
+    # Build deadline-aware system prompt
+    deadline_instruction = ""
+    if available_weeks:
+        deadline_instruction = (
+            f"\n\nCRITICAL CONSTRAINT: The student has a strict deadline of {available_weeks} weeks "
+            f"from today. The TOTAL duration of ALL phases combined MUST NOT exceed "
+            f"{available_weeks} weeks. Plan accordingly:\n"
+            f"- If time is very short (< 6 weeks), focus on 2-3 high-impact phases only.\n"
+            f"- Merge related topics into fewer, denser phases.\n"
+            f"- Prioritize interview-critical skills (DSA, core CS) over nice-to-haves.\n"
+            f"- Allocate more time to high-priority phases, less to medium/low.\n"
+            f"- Each phase must be at least 1 week.\n"
+            f"- The sum of all phase durations MUST equal exactly {available_weeks} weeks."
+        )
+    else:
+        deadline_instruction = (
+            "\n\nNo strict deadline is set. Create a comfortable, thorough roadmap "
+            "with realistic durations based on the student's weekly time availability."
+        )
 
     messages = [
         SystemMessage(content=(
@@ -141,10 +172,12 @@ def generate_phases(state: RoadmapState) -> RoadmapState:
             "near the end). Keep phase durations realistic given their stated weekly time "
             "availability. Prioritize phases as high/medium/low based on how critical they "
             "are for the target role and company tier."
+            + deadline_instruction
         )),
         HumanMessage(content=(
             f"Student profile:\n{profile_text}\n\n"
-            f"Gap summary:\n{state['gap_summary']}"
+            f"Gap summary:\n{state['gap_summary']}\n\n"
+            f"Available time: {str(available_weeks) + ' weeks' if available_weeks else 'No deadline set'}"
         )),
     ]
 
@@ -156,7 +189,7 @@ def generate_phases(state: RoadmapState) -> RoadmapState:
 
 
 # ---------------------------------------------------------------------------
-# Node 3 — Deadline adjustment (pure logic, no LLM call)
+# Node 3 — Deadline adjustment (smart LLM-powered + fallback logic)
 # ---------------------------------------------------------------------------
 
 def adjust_for_deadline(state: RoadmapState) -> RoadmapState:
@@ -170,13 +203,89 @@ def adjust_for_deadline(state: RoadmapState) -> RoadmapState:
     if total_weeks <= available_weeks:
         return {"phases": phases}
 
-    scale = available_weeks / total_weeks
-    adjusted = []
-    for p in phases:
-        scaled = max(1, math.floor(p["duration_weeks"] * scale))
-        adjusted.append({**p, "duration_weeks": scaled})
+    # ── Smart adjustment: use LLM to intelligently reprioritize ────────────
+    try:
+        llm = get_llm(temperature=0.3).with_structured_output(RoadmapPlanOutput)
+        phases_summary = json.dumps(phases, indent=2)
 
-    return {"phases": adjusted}
+        messages = [
+            SystemMessage(content=(
+                "You are a placement-prep roadmap optimizer. The student's roadmap phases "
+                f"currently total {total_weeks} weeks, but they only have {available_weeks} "
+                f"weeks available. You MUST compress the roadmap to fit exactly within "
+                f"{available_weeks} weeks.\n\n"
+                "Rules:\n"
+                "1. The sum of all phase durations MUST equal exactly "
+                f"{available_weeks} weeks.\n"
+                "2. Keep high-priority phases as long as possible; cut medium/low first.\n"
+                "3. Merge closely related phases if it saves time.\n"
+                "4. Remove or absorb low-priority phases into others if time is very tight.\n"
+                "5. Each remaining phase must be at least 1 week.\n"
+                "6. Trim topic lists within phases to only the most essential items.\n"
+                "7. Update milestones to be achievable within the compressed timeframe.\n"
+                "8. Update why_this_order to reflect the compressed plan."
+            )),
+            HumanMessage(content=(
+                f"Current phases ({total_weeks} weeks total, must fit in "
+                f"{available_weeks} weeks):\n{phases_summary}"
+            )),
+        ]
+
+        result: RoadmapPlanOutput = llm.invoke(messages)
+        adjusted = [phase.model_dump() for phase in result.phases]
+
+        # Final sanity check: ensure total doesn't exceed budget
+        adj_total = sum(p["duration_weeks"] for p in adjusted)
+        if adj_total > available_weeks:
+            # Force-fit with proportional scaling as last resort
+            adjusted = _force_fit_phases(adjusted, available_weeks)
+
+        return {"phases": adjusted}
+
+    except Exception:
+        # Fallback: smart proportional scaling (better than naive floor)
+        return {"phases": _force_fit_phases(phases, available_weeks)}
+
+
+def _force_fit_phases(phases: list, available_weeks: int) -> list:
+    """Proportionally scale phase durations to fit within available_weeks.
+
+    Uses priority-aware scaling: high-priority phases keep more of their
+    original duration than medium/low phases.
+    """
+    if not phases:
+        return phases
+
+    total_weeks = sum(p["duration_weeks"] for p in phases)
+    if total_weeks <= available_weeks:
+        return phases
+
+    # Priority weights: high gets 1.0, medium 0.7, low 0.4
+    priority_weights = {"high": 1.0, "medium": 0.7, "low": 0.4}
+
+    # Calculate weighted durations
+    weighted = []
+    for p in phases:
+        w = priority_weights.get(p.get("priority", "medium"), 0.7)
+        weighted.append(p["duration_weeks"] * w)
+
+    weighted_total = sum(weighted)
+
+    # Distribute available_weeks proportionally by weighted duration
+    adjusted = []
+    remaining_weeks = available_weeks
+    for i, p in enumerate(phases):
+        if i == len(phases) - 1:
+            # Last phase gets whatever is left
+            new_dur = max(1, remaining_weeks)
+        else:
+            share = weighted[i] / weighted_total if weighted_total > 0 else 1 / len(phases)
+            new_dur = max(1, round(available_weeks * share))
+            remaining_weeks -= new_dur
+
+        adjusted.append({**p, "duration_weeks": new_dur})
+
+    return adjusted
 
 
 # ---------------------------------------------------------------------------
@@ -247,26 +356,3 @@ def generate_roadmap(user_input: dict) -> dict:
     result = graph.invoke(initial_state)
     return result["final_output"]
 
-
-if __name__ == "__main__":
-    sample_input = {
-        "year": "3rd year",
-        "branch": "AI & Data Science",
-        "dsa_problems_solved": "50-150",
-        "known_skills": ["Python", "FastAPI", "LangChain"],
-        "os_confidence": "familiar",
-        "dbms_confidence": "strong",
-        "cn_confidence": "not started",
-        "oops_confidence": "strong",
-        "projects_count": 3,
-        "certifications": "None",
-        "target_role": "AI/ML Engineer",
-        "company_tier": "Product-based (mid-tier)",
-        "placement_mode": "Off-campus",
-        "dream_companies": "Razorpay, Groww",
-        "hours_per_week": 15,
-        "deadline": "2027-01-15",
-        "learning_style": "Practice-first",
-    }
-    output = generate_roadmap(sample_input)
-    print(json.dumps(output, indent=2))
