@@ -56,3 +56,4 @@ httpx==0.28.1
 aiohttp==3.13.3
 requests==2.32.5
 websockets==16.0
+feedparser>=6.0.0
