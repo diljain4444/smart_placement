@@ -74,6 +74,16 @@ export default function Home() {
             </p>
             <Link to="/roadmap" className="feature-btn">Generate Roadmap</Link>
           </div>
+          <div className="feature-card">
+            <span className="feature-icon">N</span>
+            <h2 className="feature-title">Latest News</h2>
+            <p className="feature-desc">
+              Stay updated with AI-curated, placement-relevant news from top
+              companies like Google, Microsoft, Amazon, Meta, and more —
+              covering hiring, layoffs, expansions, and tech launches.
+            </p>
+            <Link to="/news" className="feature-btn">View Latest News</Link>
+          </div>
         </div>
       </section>
 

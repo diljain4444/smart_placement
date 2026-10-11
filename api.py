@@ -1,15 +1,4 @@
-"""
-api.py
-──────────────────────────────────────────────────────────────────────
-Single FastAPI backend for Smart Placement.
 
-All routes live here. Interview session state is kept in a simple
-Python dictionary (no database required).
-
-Run with:
-    uvicorn api:app --reload --port 8000
-──────────────────────────────────────────────────────────────────────
-"""
 
 import os
 import uuid
@@ -51,6 +40,7 @@ from rag_back import (
     workflow as rag_workflow,
 )
 from roadmap_backend import generate_roadmap
+from news_backend import run_pipeline_async as news_pipeline_async
 from langchain_community.vectorstores import FAISS
 from langchain_community.retrievers import BM25Retriever
 
@@ -836,3 +826,43 @@ async def generate_roadmap_route(req: RoadmapRequest):
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(500, f"Roadmap generation failed: {str(e)}")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ROUTES — LATEST NEWS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/news")
+async def get_news():
+    """Fetch placement-relevant news for top companies.
+
+    Uses a 30-minute in-memory + disk cache.  Call /api/news/refresh
+    to bypass the cache and force a fresh fetch from RSS + LLM.
+    """
+    try:
+        from datetime import datetime, timezone
+
+        results = await news_pipeline_async(refresh=False)
+        return {
+            "results": results,
+            "fetched_at": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(500, f"News fetch failed: {str(e)}")
+
+
+@app.get("/api/news/refresh")
+async def refresh_news():
+    """Force-refresh news (bypass cache) for all companies."""
+    try:
+        from datetime import datetime, timezone
+
+        results = await news_pipeline_async(refresh=True)
+        return {
+            "results": results,
+            "fetched_at": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(500, f"News refresh failed: {str(e)}")

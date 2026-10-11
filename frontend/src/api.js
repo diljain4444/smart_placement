@@ -28,3 +28,7 @@ export const ragReset = (data) => api.post('/api/rag/reset', data);
 
 // Roadmap
 export const generateRoadmapApi = (data) => api.post('/api/roadmap/generate', data);
+
+// News
+export const fetchNews = () => api.get('/api/news');
+export const refreshNews = () => api.get('/api/news/refresh');

@@ -1,0 +1,1017 @@
+================================================================================
+          SMART PLACEMENT — AI CAREER PLATFORM | PRESENTATION CONTENT
+================================================================================
+              Prepared for College Project Presentation
+================================================================================
+
+
+================================================================================
+SLIDE 1: TITLE SLIDE
+================================================================================
+
+Project Title  : Smart Placement — AI-Powered Career Preparation Platform
+Tagline        : "Your Personal AI Career Coach — Interview, Resume, Learn, Grow"
+Team           : [Your Name / Team Members]
+College        : [Your College Name]
+Guide          : [Faculty Guide Name]
+
+
+================================================================================
+SLIDE 2: PROBLEM STATEMENT
+================================================================================
+
+Problems Faced by Engineering Students During Placement Season:
+--------------------------------------------------------------
+1. No access to realistic mock interview practice with instant feedback
+2. Resumes are not ATS (Applicant Tracking System) optimized, leading to rejections
+3. Students don't know how to tailor resumes for specific job descriptions
+4. No personalized roadmap — students don't know what to study, in what order
+5. Scattered learning resources across the internet with no curation
+6. No way to quickly ask questions about study material / syllabus documents
+
+Our Solution:
+-------------
+Smart Placement is an all-in-one AI-powered platform that addresses every
+challenge a student faces during placement preparation — from practicing
+interviews with a talking AI avatar, to building ATS-friendly resumes,
+to getting a personalized study roadmap.
+
+
+================================================================================
+SLIDE 3: PROJECT OVERVIEW & KEY FEATURES
+================================================================================
+
+Smart Placement consists of 5 major AI-powered modules:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Module 1: AI Mock Interview                                                │
+│   - Practice with a talking AI video avatar (James Cooper)                 │
+│   - Voice mode (speak your answers) or Text mode (type your answers)       │
+│   - Real-time scoring & feedback after every answer                        │
+│   - Comprehensive performance report with learning roadmap                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Module 2: Resume Suite (Builder + Modifier + Rater)                        │
+│   - AI Resume Builder: Generate professional ATS-friendly PDF from form    │
+│   - AI Resume Modifier: Tailor your resume to any Job Description          │
+│   - AI Resume Rater: Get a hybrid ATS + AI score with detailed feedback    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Module 3: Learning Inception (Resource Library)                            │
+│   - 1,865+ curated technical resources across 57+ topics                   │
+│   - 370+ soft skill development resources across 15 topics                 │
+│   - Filter by category, language, difficulty level                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Module 4: Document Q&A (RAG-based)                                         │
+│   - Upload any study material (PDF, DOCX, CSV, TXT, images)               │
+│   - Ask questions and get precise, fact-grounded answers                   │
+│   - Uses advanced Hybrid Search (FAISS + BM25) for accuracy               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Module 5: Placement Roadmap Generator                                      │
+│   - Input your current skills, year, target role, and deadline             │
+│   - AI analyzes gaps and generates phase-wise preparation plan             │
+│   - Priority-weighted time allocation with deadline adjustment             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+SLIDE 4: SYSTEM ARCHITECTURE
+================================================================================
+
+                                  ┌───────────────────────────────┐
+                                  │      React Frontend           │
+                                  │   (React 19 + Vite + Axios)   │
+                                  │       Port: 5173              │
+                                  └──────────────┬────────────────┘
+                                                 │ HTTP REST API
+                                                 │ (Vite Proxy → :8000)
+                                                 ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       api.py (FastAPI Gateway)                              │
+│  • 15 REST Endpoints                                                       │
+│  • In-Memory Session Management (interview_sessions, rag_sessions)         │
+│  • CORS Middleware for cross-origin requests                                │
+│  • Async request handling with Uvicorn ASGI server                          │
+└────────┬──────────────────────┬──────────────────┬──────────────┬───────────┘
+         │                      │                  │              │
+         ▼                      ▼                  ▼              ▼
+┌─────────────────┐  ┌──────────────────┐  ┌──────────────┐  ┌──────────────┐
+│interview_backend│  │  resume_backend  │  │  rag_back    │  │roadmap_backend│
+│ • LangGraph FSM │  │ • Resume Builder │  │ • Multi-Query│  │ • Gap Analysis│
+│ • Edge-TTS      │  │ • JD Modifier    │  │ • FAISS+BM25 │  │ • Phase Plan  │
+│ • Groq Whisper  │  │ • Hybrid Rater   │  │ • Re-ranking │  │ • Deadline Fit│
+│ • Adaptive Q&A  │  │ • PDF/DOCX Gen   │  │ • Low-Temp QA│  │ • Force-Fit   │
+└─────────────────┘  └──────────────────┘  └──────────────┘  └──────────────┘
+
+
+Project File Structure:
+-----------------------
+smart_placement/
+├── frontend/                ← React + Vite (port 5173)
+│   ├── src/
+│   │   ├── pages/           ← Home, MockInterview, ResumeSuite, LearningInception, DocQA, Roadmap
+│   │   ├── components/      ← Navbar, AvatarPanel, InterviewReport, ResumeForm, Loading, TopicCard, etc.
+│   │   ├── styles/          ← main.css (full custom design system)
+│   │   └── api.js           ← Centralized Axios API layer (14 functions)
+│   └── public/videos/       ← Interview avatar video clips
+│
+├── api.py                   ← FastAPI backend (15 endpoints, session management)
+├── interview_backend.py     ← AI interview engine (LangGraph + Groq LLM)
+├── resume_backend.py        ← AI resume generation + hybrid rating logic
+├── resume_validators.py     ← Lightweight regex form validation
+├── rag_back.py              ← Document Q&A with hybrid retrieval
+├── roadmap_backend.py       ← Placement roadmap AI generator
+├── roadmap_front.py         ← Streamlit prototype for roadmap testing
+├── assets/                  ← Avatar video files (MP4)
+├── *.xlsx                   ← Learning resource datasets (technical + soft skills)
+├── requirements.txt         ← Python dependencies
+└── .env                     ← GROQ_API_KEY
+
+
+================================================================================
+SLIDE 5: TECHNOLOGY STACK
+================================================================================
+
+┌──────────────────┬──────────────────────────────────────────────────────────┐
+│     Layer        │     Technologies Used                                    │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ Frontend         │ React 19, Vite 8, React Router 7, Axios                 │
+│ UI/Styling       │ Custom CSS Design System (no external UI framework)     │
+│ Backend API      │ FastAPI, Uvicorn (ASGI), Python 3.x                     │
+│ AI/LLM Engine    │ LangChain, LangGraph, Groq Cloud (openai/gpt-oss-120b) │
+│ Speech (TTS)     │ Edge-TTS (Microsoft Neural Voice: en-US-GuyNeural)      │
+│ Speech (STT)     │ Groq Whisper (whisper-large-v3-turbo)                   │
+│ Vector Search    │ FAISS (Dense Vectors), BM25 (Sparse Keywords)           │
+│ Embeddings       │ HuggingFace (BAAI/bge-small-en-v1.5) — runs locally    │
+│ Document Parsing │ PyMuPDF, python-docx, docx2txt, Unstructured            │
+│ PDF Generation   │ ReportLab (Platypus engine)                              │
+│ Validation       │ Pydantic v2, email-validator, custom regex validators   │
+│ State Management │ LangGraph MemorySaver (checkpointed conversations)      │
+│ Environment      │ python-dotenv, .env configuration                       │
+└──────────────────┴──────────────────────────────────────────────────────────┘
+
+
+================================================================================
+SLIDE 6: MODULE 1 — AI MOCK INTERVIEW (Detailed Working)
+================================================================================
+
+PURPOSE:
+--------
+An adaptive, human-in-the-loop AI mock interviewer that simulates a real
+technical interview experience using a video avatar, voice interaction,
+and intelligent question progression.
+
+HOW IT WORKS (Step by Step):
+----------------------------
+
+Step 1: Resume Upload & Processing
+   → User uploads resume (PDF/DOCX) + optional Job Description
+   → Backend calls preprocess() to extract text using PyMuPDF/docx2txt
+   → Text is cleaned (regex removes page markers, non-ASCII, redundant spaces)
+   → LLM chain extracts structured info: Education, Skills, Projects
+   → If JD provided, it's cleaned and stored as jd_context
+
+Step 2: Interview Session Initialization
+   → Backend creates a unique UUID session ID and thread ID
+   → LangGraph workflow is initialized with candidate profile data
+   → First question is generated using the LLM
+   → Edge-TTS converts the question text to speech (MP3 audio)
+   → Audio is base64-encoded and sent to frontend
+
+Step 3: Interactive Q&A Loop (The Core)
+   → AI avatar (video) plays the question with synchronized audio
+   → Candidate answers via:
+     - Voice Mode: Browser microphone → MediaRecorder API → audio blob
+       → sent to backend → Groq Whisper transcribes to text
+     - Text Mode: User types answer in textarea → sent as text
+   → LLM evaluates the answer:
+     - Scores it 0-10
+     - Determines if follow-up is needed
+     - Generates concise feedback (1-2 sentences)
+   → If follow-up needed AND depth < 2: asks a deeper follow-up question
+   → If not: moves to a new topic
+   → Both feedback and next question are converted to TTS audio
+   → Avatar plays feedback audio first, then question audio sequentially
+
+Step 4: Interview Completion & Report
+   → After covering ≥ 5 topics (or user clicks "End Interview" after ≥ 3)
+   → LLM analyzes full conversation history
+   → Generates comprehensive review containing:
+     - Overall Rating (out of 10)
+     - Communication Score
+     - Confidence Score
+     - Per-Topic Ratings with weaknesses identified
+     - Overall Strengths list
+     - Overall Weaknesses list
+     - Top Recommendations
+     - Personalized Learning Roadmap (topics, concepts, resources, durations)
+
+INTERVIEW FLOW MODES:
+---------------------
+• "Resume Only" mode: Questions based purely on candidate's resume
+• "Resume + JD" mode: Questions progress through structured stages:
+   1. Personal Introduction
+   2. JD-Required Skills Assessment
+   3. Project Deep-Dive
+   4. Role Alignment Evaluation
+   5. Gap Assessment
+   6. Behavioral Scenarios
+
+LANGGRAPH STATE MACHINE:
+-------------------------
+  START → question_generator (interrupts for user answer)
+              ↓
+        answer_evaluator
+              ↓
+        route_after_eval
+           /        \
+      (continue)   (end: topics ≥ 5 or user forced end)
+          ↓             ↓
+  question_generator   report_ready → END
+
+KEY DATA MODELS:
+----------------
+• state (TypedDict): Tracks education, skills, projects, interview_mode,
+  jd_context, user_question, user_answer, history, current_depth,
+  feedback, covered_topics, follow_up_required, current_topic, score, review_final
+
+• user_info (Pydantic): education, skills[], projects[]
+
+• ans_eval (Pydantic): score (0-10), follow_up_required (bool), feedback (str)
+
+• review (Pydantic): overall_rating, topic[] (with ratings & weaknesses),
+  overall_strength[], overall_weakness[], top_recommendation[],
+  road_map[] (topic, concepts, duration, resources),
+  communication_score, confidence_score
+
+AVATAR PANEL (Frontend):
+-------------------------
+• 3 pre-rendered MP4 video states:
+  - new_final_question.mp4 → Green glow, speaking equalizer bars
+  - new_waiting.mp4        → Slate glow, idle state
+  - new_hearing.mp4        → Blue glow, microphone wave bars
+• Videos crossfade using CSS opacity transitions
+• Audio played via HTMLAudioElement with base64 data URLs
+• Browser autoplay unlocked using silent WAV trick during user gesture
+• Sequential playback: feedback audio → question audio → return to waiting
+
+
+================================================================================
+SLIDE 7: MODULE 2 — RESUME SUITE (Builder + Modifier + Rater)
+================================================================================
+
+PURPOSE:
+--------
+A comprehensive AI-powered resume engineering workstation that builds,
+rewrites, scores, and exports professional resumes as pixel-perfect PDFs.
+
+SUB-MODULE 2A: RESUME BUILDER
+------------------------------
+How It Works:
+1. User fills a 7-section form:
+   - Personal Information (Name, Email, Phone, Location, LinkedIn, GitHub, Portfolio)
+   - Professional Summary
+   - Skills (comma-separated)
+   - Education (repeatable: degree, institution, years, GPA)
+   - Work Experience (repeatable: role, company, dates, responsibilities)
+   - Projects (repeatable: title, tech stack, description, link)
+   - Certifications (repeatable: name, issuer, date)
+   - Achievements
+
+2. Frontend validates all fields:
+   - Email format (email-validator library)
+   - Phone: 10-15 digits after stripping non-digits
+   - URLs: regex pattern validation
+   - Years: 4-digit or "Present"
+   - Required fields: name (min 2 chars), skills, at least 1 project or experience
+
+3. Data sent as JSON to backend → LLM generates a professional Resume object
+   → LLM uses structured output (Pydantic schema) to ensure valid format
+
+4. If LLM output fails validation: Self-healing parser feeds the error back
+   to the LLM with a FIX_PROMPT → LLM corrects its own JSON (max 1 retry)
+
+5. Resume Pydantic model → rendered to PDF using ReportLab Platypus:
+   - SimpleDocTemplate with custom page margins
+   - ParagraphStyle for each section (headings, body, bullets)
+   - HRFlowable for horizontal dividers
+   - ListFlowable for bullet points
+   - All non-ASCII characters sanitized (en-dashes, curly quotes → ASCII)
+
+6. PDF streamed back to frontend → auto-downloaded as "{Name}_Resume.pdf"
+
+SUB-MODULE 2B: RESUME MODIFIER
+-------------------------------
+How It Works:
+1. User provides resume data via:
+   - Option A: Upload existing resume (PDF/DOCX/TXT) → text extracted
+   - Option B: Fill the same 7-section form manually
+
+2. User enters the target Job Description (min 50 characters)
+
+3. User adjusts "Creativity" temperature slider (0.2 = conservative, 0.9 = creative)
+
+4. Backend tailors the resume:
+   - Rewrites bullet points to match JD keywords
+   - Reorders skills to prioritize JD-relevant ones
+   - Adjusts professional summary for the target role
+   - Does NOT fabricate information — only restructures and rephrases
+
+5. Modified resume → PDF generated → auto-downloaded as "Modified_Resume.pdf"
+
+SUB-MODULE 2C: RESUME RATER (Hybrid Scoring)
+----------------------------------------------
+How It Works:
+1. User provides resume text (paste or upload) + target Job Description
+
+2. STATISTICAL ANALYSIS (35% weight):
+   - Tokenization: Extract words using regex [A-Za-z][A-Za-z0-9+.#-]{1,}
+   - Remove stopwords (common English words)
+   - Compute Term Frequency vectors for both resume and JD
+   - Calculate Cosine Similarity:
+     cos(θ) = (A · B) / (||A|| × ||B||)
+   - Extract top 25 JD keywords
+   - Identify matched keywords and missing keywords
+
+3. LLM QUALITATIVE ANALYSIS (65% weight):
+   - AI acts as a senior recruiter reviewing the resume against the JD
+   - Scores on 5 metrics (each 0-100):
+     a) Content Quality Score
+     b) Keyword Alignment Score
+     c) ATS Friendliness Score
+     d) Formatting Score
+     e) Overall Score
+   - Provides: Strengths, Weaknesses, Missing Keywords, Suggestions, Summary
+
+4. HYBRID SCORE CALCULATION:
+   Hybrid Score = round(0.35 × Similarity Score + 0.65 × LLM Overall Score)
+
+5. Frontend displays:
+   - Large overall hybrid score badge (out of 100)
+   - 5-metric score cards
+   - Recruiter summary text
+   - Strengths & Weaknesses bullet points
+   - Green tags for matched keywords, Red tags for missing keywords
+
+KEY DATA MODELS:
+----------------
+• Resume (Pydantic): Full resume structure with validators for phone,
+  email, URLs, skill deduplication, and experience/project requirements
+
+• KeywordMatch: similarity_score, matched_keywords[], missing_keywords[]
+
+• ResumeRating: overall_score, content_quality_score, keyword_alignment_score,
+  ats_friendliness_score, formatting_score, strengths[], weaknesses[],
+  missing_keywords[], suggestions[], summary_feedback
+
+• HybridRating: hybrid_score, similarity (KeywordMatch), llm_rating (ResumeRating)
+
+
+================================================================================
+SLIDE 8: MODULE 3 — LEARNING INCEPTION (Resource Library)
+================================================================================
+
+PURPOSE:
+--------
+A curated, multi-level educational resource repository that connects students
+to vetted YouTube playlists and tutorials across technical and soft-skill domains.
+
+HOW IT WORKS:
+--------------
+1. Data Source: Pre-compiled Excel datasets (technical_1-5.xlsx, soft_skill.xlsx)
+   → Converted to JSON files:
+   - technicalResources.json: 1,865+ resources across 57+ technical topics
+   - softSkillResources.json: 370+ resources across 15 soft-skill topics
+
+2. Each resource entry contains:
+   - channel: YouTube channel name
+   - category: "Playlist", "One Shot", "Tutorial", etc.
+   - language: "English", "Hindi", etc.
+   - level: "Easy", "Medium", "Hard"
+   - topic: The subject (e.g., "Python", "React", "Leadership")
+   - url: Direct YouTube link
+
+3. User Navigation Flow:
+   Landing Page → Select "Technical" or "Soft Skills"
+        ↓
+   Topics Grid → Cards showing topic name, emoji icon, resource count
+        ↓
+   Resource List → Filtered view of resources for selected topic
+        ↓
+   Apply Filters → Filter by Category, Language, Difficulty Level
+        ↓
+   Click "Watch on YouTube" → Opens video in new tab
+
+4. Frontend Features:
+   - 60+ custom emoji icons for topics (Python: 🐍, React: ⚛️, Docker: 🐳, etc.)
+   - Dynamic filter extraction from dataset (no hardcoding)
+   - Responsive grid layout
+   - Breadcrumb navigation (Learning Inception › Section › Topic)
+   - Entirely client-side (no API calls — all data loaded from JSON files)
+
+FRONTEND COMPONENTS:
+---------------------
+• LearningInception.jsx: Main page with 3 views (landing, topics, resources)
+• TopicCard.jsx: Interactive card for each topic with icon, count
+• ResourceCard.jsx: Individual resource with channel, tags, YouTube link
+• ResourceFilters.jsx: Dynamic filter pill bar for category, language, level
+
+
+================================================================================
+SLIDE 9: MODULE 4 — DOCUMENT Q&A (RAG Engine)
+================================================================================
+
+PURPOSE:
+--------
+An advanced Retrieval-Augmented Generation (RAG) system that lets users
+upload any document and ask questions, receiving precise, fact-grounded
+answers with zero hallucination.
+
+HOW IT WORKS (Detailed Pipeline):
+-----------------------------------
+
+Phase 1: Document Upload & Processing
+   1. User uploads document (PDF, DOCX, CSV, TXT, or images)
+   2. Backend ingests file using appropriate loader:
+      - PDF → PyMuPDFLoader
+      - DOCX → Docx2txtLoader
+      - CSV → CSVLoader
+      - TXT → TextLoader
+      - Images → UnstructuredImageLoader (with OCR)
+   3. Text is cleaned (remove page markers, non-ASCII, excessive whitespace)
+   4. Text is split into chunks:
+      → RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+   5. Two indexes are created:
+      a) FAISS Vector Index: Chunks embedded using HuggingFace BAAI/bge-small-en-v1.5
+      b) BM25 Sparse Index: Keyword-based retrieval using rank-bm25
+   6. Session ID returned to frontend with filename and chunk count
+
+Phase 2: Question Answering (LangGraph Pipeline)
+   For each user question, the following 5-stage pipeline executes:
+
+   Stage 1: Multi-Query Expansion
+      → User's question is expanded into 3 semantic query variants by LLM
+      → Purpose: Capture different phrasings to improve retrieval recall
+      → Example: "What is the salary?" → ["compensation details",
+        "pay range mentioned", "salary information provided"]
+
+   Stage 2: Hybrid Search (for each of the 3 queries)
+      → Dense Search: FAISS retrieves top-5 semantically similar chunks
+      → Sparse Search: BM25 retrieves top-5 keyword-matching chunks
+      → Total: Up to 30 candidate chunks (3 queries × 2 methods × 5 each)
+
+   Stage 3: Merging & Deduplication
+      → Duplicate chunks identified by text hash
+      → For each unique chunk, track:
+        - Frequency (how many queries found it)
+        - Source retrievers (vector, bm25, or both)
+        - Which query variants found it
+
+   Stage 4: Re-Ranking (Fusion Score)
+      → Score = (Frequency × 2) + (3 if found by BOTH vector AND bm25, else 1)
+                + (Count of unique queries that found it)
+      → Chunks sorted by score in descending order
+      → Top 5 chunks selected as final context
+
+   Stage 5: Answer Generation
+      → Top 5 chunks formatted as numbered sources [Source 1], [Source 2], etc.
+      → LLM (temperature=0.1 for factual accuracy) generates answer
+      → Strict instruction: "ONLY use facts explicitly stated in context.
+        If not present, respond: 'This information is not available in the
+        uploaded document.'"
+
+LANGGRAPH RAG WORKFLOW:
+-----------------------
+  START → multi_query_retrieval → merging → re_ranking → context_builder
+                                                              ↓
+                                                       answer_generator → END
+
+LLM CONFIGURATION:
+-------------------
+• Query Expansion: ChatGroq (temperature=0.4) — slightly creative for variety
+• Answer Generation: ChatGroq (temperature=0.1) — highly deterministic for accuracy
+• Embedding Model: HuggingFace BAAI/bge-small-en-v1.5 (runs locally, no API cost)
+
+FRONTEND (DocQA.jsx):
+---------------------
+• Phase 1 UI: Drag-and-drop file upload zone with format hints
+• Phase 2 UI: Chat interface
+  - User messages: Indigo background, right-aligned
+  - AI messages: Dark background, left-aligned
+  - Thinking indicator: Three pulsing dots with "Analyzing document..."
+  - Bottom input bar with "Ask" button
+  - Header shows filename and chunk count badge
+
+
+================================================================================
+SLIDE 10: MODULE 5 — PLACEMENT ROADMAP GENERATOR
+================================================================================
+
+PURPOSE:
+--------
+An AI-powered career roadmap generator tailored for Indian engineering students.
+It evaluates the student's current preparation level, identifies gaps, and
+produces a structured, deadline-aware preparation plan.
+
+HOW IT WORKS:
+--------------
+
+Step 1: Student Profile Collection (17 Fields)
+   Academic Information:
+     - Year (1st to 4th year)
+     - Branch
+     - DSA Problems Solved (<50, 50-150, 150-300, 300+)
+     - Known Skills (select from 18 options + custom input)
+     - Project Count
+     - Certifications
+
+   CS Fundamentals Confidence (4 subjects):
+     - Operating Systems: not started / familiar / strong
+     - DBMS: not started / familiar / strong
+     - Computer Networks: not started / familiar / strong
+     - OOP: not started / familiar / strong
+
+   Target Goals:
+     - Target Role: SDE, AI/ML Engineer, Data Analyst, Data Scientist
+     - Company Tier: Service-based, Product-based mid-tier, FAANG/top product, Startups
+     - Placement Mode: On-campus / Off-campus
+     - Dream Companies
+
+   Constraints:
+     - Available Hours per Week (1-80)
+     - Learning Style: Videos, Docs, Practice-first, Mixed
+     - Deadline (optional date)
+
+Step 2: Gap Analysis (LangGraph Node 1)
+   → LLM evaluates current skills vs target role and company tier
+   → Outputs a concise 2-3 sentence gap assessment
+   → Example: "Strong DSA base but needs system design depth for FAANG-level
+     product companies. Missing cloud deployment and CI/CD skills."
+
+Step 3: Phase Generation (LangGraph Node 2)
+   → LLM generates 3 to 6 ordered preparation phases
+   → Each phase contains:
+     - Phase Name (e.g., "DSA Mastery", "System Design Foundations")
+     - Duration in Weeks
+     - Priority: High / Medium / Low
+     - Topics to Cover
+     - Milestone (measurable goal)
+     - Suggested Project (optional)
+     - Why This Order (pedagogical justification)
+
+Step 4: Deadline Adjustment (LangGraph Node 3)
+   → Calculates weeks until student's deadline
+   → If total phase duration exceeds available weeks:
+     a) First try: LLM is asked to compress and merge phases
+     b) If LLM fails: Force-Fit Algorithm activates:
+        - Assigns priority weights: High=1.0, Medium=0.7, Low=0.4
+        - Calculates weighted durations proportionally
+        - Distributes available weeks proportionally to priority
+        - Ensures every phase gets at least 1 week
+        - Final phase absorbs remaining rounding margin
+
+Step 5: Finalization (LangGraph Node 4)
+   → Compiles final output: gap summary, phases, weekly time commitment
+
+LANGGRAPH PIPELINE:
+-------------------
+  START → analyze_gap → generate_phases → adjust_for_deadline → finalize → END
+
+FRONTEND (Roadmap.jsx):
+------------------------
+• Form View: 3 sections of inputs (Where You Are, Where You Want to Go, Constraints)
+• Skills Selection: 18 pre-defined pill buttons + custom skill text input
+• Results View:
+  - Gap Analysis Summary card
+  - Meta badges: Weekly commitment, total weeks, number of phases
+  - Phase Timeline: Sequential cards with priority badges (🔴 High, 🟡 Medium, 🟢 Low),
+    topic pills, milestone, suggested project box, and "Why This Order" explanation
+
+
+================================================================================
+SLIDE 11: API ENDPOINTS (Backend Routes)
+================================================================================
+
+Total Endpoints: 15
+
+┌────────────────────────────────┬────────┬──────────────────────────────────────┐
+│ Route                          │ Method │ Description                          │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ /api/health                    │ GET    │ Health check                         │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ MOCK INTERVIEW ENDPOINTS       │        │                                      │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ /api/interview/process-resume  │ POST   │ Upload resume → extract profile      │
+│ /api/interview/start           │ POST   │ Create session → first question      │
+│ /api/interview/answer          │ POST   │ Submit text answer → get feedback     │
+│ /api/interview/voice-answer    │ POST   │ Upload audio → transcribe → evaluate │
+│ /api/interview/end             │ POST   │ Force end → generate final report    │
+│ /api/interview/reset           │ POST   │ Delete interview session             │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ RESUME SUITE ENDPOINTS         │        │                                      │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ /api/resume/build              │ POST   │ Generate resume → stream PDF         │
+│ /api/resume/modify             │ POST   │ Modify for JD → stream PDF           │
+│ /api/resume/rate               │ POST   │ Hybrid ATS + AI scoring              │
+│ /api/resume/extract-text       │ POST   │ Extract text from uploaded file       │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ DOCUMENT Q&A (RAG) ENDPOINTS   │        │                                      │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ /api/rag/upload                │ POST   │ Upload → chunk → embed → index       │
+│ /api/rag/ask                   │ POST   │ Query RAG → get grounded answer      │
+│ /api/rag/reset                 │ POST   │ Clear vector session                 │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ ROADMAP ENDPOINT               │        │                                      │
+├────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ /api/roadmap/generate          │ POST   │ Generate personalized roadmap        │
+└────────────────────────────────┴────────┴──────────────────────────────────────┘
+
+
+================================================================================
+SLIDE 12: KEY ALGORITHMS & AI TECHNIQUES
+================================================================================
+
+1. LangGraph State Machines (Used in 3 modules)
+   ─────────────────────────────────────────────
+   - Interview: Human-in-the-loop with interrupt() mechanism for user input
+   - RAG: 5-stage pipeline (query expansion → hybrid search → rerank → answer)
+   - Roadmap: 4-stage pipeline (gap analysis → phase generation → deadline fit → finalize)
+   - MemorySaver checkpointer preserves conversation state across requests
+
+2. Human-in-the-Loop Pattern (Interview)
+   ─────────────────────────────────────────
+   - LangGraph's interrupt() pauses execution until user answers
+   - Command(resume=answer) resumes the graph with user's response
+   - Enables true conversational flow with server-side state persistence
+
+3. Hybrid Retrieval (RAG)
+   ─────────────────────────
+   - Dense: FAISS vector similarity using HuggingFace embeddings
+   - Sparse: BM25 keyword matching using term frequency
+   - Fusion: Reciprocal Rank scoring combining both approaches
+   - Multi-Query: 3 semantic variants per question for better recall
+
+4. Cosine Similarity (Resume Rater)
+   ─────────────────────────────────
+   - Pure-Python TF vector computation
+   - cos(θ) = (A · B) / (||A|| × ||B||)
+   - Applied to resume vs JD term-frequency vectors
+
+5. Hybrid Scoring Formula (Resume Rater)
+   ─────────────────────────────────────────
+   Hybrid Score = round(0.35 × Cosine Similarity + 0.65 × LLM Score)
+   - Combines deterministic metrics with qualitative AI evaluation
+
+6. Self-Healing JSON Parser (Resume Backend)
+   ──────────────────────────────────────────
+   - If LLM output fails Pydantic validation
+   - Error + raw output fed back to LLM via FIX_PROMPT
+   - LLM corrects its own JSON (1 retry max)
+
+7. Priority-Weighted Force-Fit (Roadmap)
+   ──────────────────────────────────────
+   - When phases exceed deadline, proportional compression:
+     High=1.0, Medium=0.7, Low=0.4 weights
+   - Ensures every phase gets ≥ 1 week
+   - Final phase absorbs rounding margin
+
+8. Neural Text-to-Speech (Interview)
+   ──────────────────────────────────
+   - Edge-TTS with Microsoft's en-US-GuyNeural voice
+   - Rate adjusted to -10% for natural pacing
+   - Audio converted to base64 for inline browser playback
+
+9. Speech-to-Text Transcription (Interview)
+   ────────────────────────────────────────
+   - Groq Whisper (whisper-large-v3-turbo model)
+   - Raw audio saved to temp .wav → transcribed via API
+   - Transcript used as interview answer
+
+
+================================================================================
+SLIDE 13: FRONTEND ARCHITECTURE & DESIGN
+================================================================================
+
+FRAMEWORK: React 19 with Vite 8
+---------------------------------
+• Functional components only (zero class components)
+• Hooks used: useState, useEffect, useRef, useCallback, useMemo
+• React Router v7 for client-side SPA routing (6 routes)
+• Axios for all HTTP communication via centralized api.js (14 API functions)
+
+DESIGN SYSTEM (Custom CSS — No External UI Framework):
+-------------------------------------------------------
+• Dark theme with Zinc color palette (#09090B base, #18181B surfaces)
+• Primary accent: Indigo (#6366F1)
+• Semantic colors: Emerald (success), Amber (warning), Rose (error)
+• Custom animations:
+  - spin: 360° loader rotation
+  - pulse: Opacity breathing for recording indicators
+  - fadeIn: Subtle Y-translate entry transitions
+  - speak: Vertical bar oscillations for avatar speaking visualizer
+  - wave: Microphone audio waveform simulation
+• Responsive breakpoints: 900px, 768px, 600px, 480px
+• Typography: Inter font (Google Fonts) with 4 weights
+
+PAGE COMPONENTS (6 Pages):
+---------------------------
+1. Home.jsx         → Landing page with hero, feature cards, how-it-works steps
+2. MockInterview.jsx → 3-step interview workflow (Setup → Interview → Report)
+3. ResumeSuite.jsx  → 3-tab resume workstation (Builder, Modifier, Rater)
+4. LearningInception.jsx → 3-view resource browser (Landing → Topics → Resources)
+5. DocQA.jsx        → 2-phase document Q&A (Upload → Chat interface)
+6. Roadmap.jsx      → Form + results view for personalized roadmaps
+
+REUSABLE COMPONENTS (8 Components):
+-------------------------------------
+1. Navbar.jsx        → Fixed top nav with responsive hamburger menu
+2. Loading.jsx       → Spinner overlay (inline or fullscreen modes)
+3. AvatarPanel.jsx   → AI video avatar with 3 states and audio sequencing
+4. InterviewReport.jsx → Performance dashboard with scores, charts, roadmap
+5. ResumeForm.jsx    → 7-section resume data entry form with validation
+6. TopicCard.jsx     → Learning topic card with emoji icon and count
+7. ResourceCard.jsx  → Individual resource with metadata tags and YouTube link
+8. ResourceFilters.jsx → Dynamic filter pills for category, language, level
+
+
+================================================================================
+SLIDE 14: AVATAR PANEL — TECHNICAL DEEP DIVE
+================================================================================
+
+The AI Avatar (James Cooper — Senior Technical Recruiter) is a key
+differentiating feature of the Mock Interview module.
+
+VIDEO STATE MACHINE:
+---------------------
+┌─────────────────────────────────────────────────────────────────────┐
+│ State: new_final_question                                          │
+│ Visual: Green border glow (#22C55E), 5 green equalizer bars        │
+│ Label: "Asking Question"                                            │
+│ Video: new_final_question.mp4 (speaking animation)                  │
+│ Audio: Playing question/feedback via HTMLAudioElement               │
+├─────────────────────────────────────────────────────────────────────┤
+│ State: new_waiting                                                  │
+│ Visual: Slate border (#4A5568), idle appearance                    │
+│ Label: "Waiting for Response"                                       │
+│ Video: new_waiting.mp4 (idle animation)                             │
+│ Audio: None playing                                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│ State: new_hearing                                                  │
+│ Visual: Blue border glow (#3B6BE8), 5 blue wave bars + MIC badge   │
+│ Label: "Listening..."                                               │
+│ Video: new_hearing.mp4 (listening animation)                        │
+│ Audio: None (user is speaking)                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+AUDIO SEQUENCING LOGIC:
+-------------------------
+1. New question arrives → audioSeqId incremented
+2. stopAudio() called to halt any previous playback
+3. Avatar transitions to "new_final_question" state
+4. playClip(feedbackAudio) → awaits completion
+5. playClip(questionAudio) → awaits completion
+6. Avatar returns to "new_waiting" state
+7. If browser blocks autoplay → "Start Interview" button appears
+8. "Replay Question Audio" button available for re-listening
+
+BROWSER AUTOPLAY WORKAROUND:
+------------------------------
+• A 44-byte silent WAV audio is played inside the "Start Interview"
+  button's click handler (user gesture context)
+• This unlocks the browser's autoplay policy for the session
+• All subsequent audio plays automatically without user interaction
+
+
+================================================================================
+SLIDE 15: DATA FLOW DIAGRAMS
+================================================================================
+
+MOCK INTERVIEW DATA FLOW:
+---------------------------
+  User (Browser)                    FastAPI (api.py)              interview_backend.py
+       │                                  │                              │
+       │── Upload Resume ────────────────►│── preprocess() ─────────────►│
+       │                                  │── information_retrival() ───►│
+       │◄── {education, skills, projects} ◄──────────────────────────────│
+       │                                  │                              │
+       │── Start Interview ──────────────►│── workflow.invoke() ────────►│
+       │                                  │── text_to_audio_b64() ─────►│
+       │◄── {session_id, question, audio} ◄──────────────────────────────│
+       │                                  │                              │
+       │── Submit Answer ────────────────►│── Command(resume=answer) ──►│
+       │                                  │── answer_evaluator() ──────►│
+       │                                  │── question_generator() ────►│
+       │◄── {feedback, next_question, audio}◄────────────────────────────│
+       │                                  │                              │
+       │── End Interview ────────────────►│── report_ready() ──────────►│
+       │◄── {report} ◄──────────────────────────────────────────────────│
+
+
+RESUME RATING DATA FLOW:
+--------------------------
+  User (Browser)               FastAPI (api.py)              resume_backend.py
+       │                             │                              │
+       │── Resume + JD ─────────────►│── rate_resume() ────────────►│
+       │                             │                              │
+       │                             │    ┌─ compute_similarity() ──┤
+       │                             │    │  (cosine TF vectors)     │
+       │                             │    │  → similarity_score      │
+       │                             │    │  → matched/missing keywords
+       │                             │    │                          │
+       │                             │    ├─ LLM Evaluation ────────┤
+       │                             │    │  (recruiter analysis)    │
+       │                             │    │  → 5 metric scores       │
+       │                             │    │  → strengths/weaknesses  │
+       │                             │    │                          │
+       │                             │    └─ Hybrid Merge ──────────┤
+       │                             │       0.35×sim + 0.65×llm    │
+       │◄── {hybrid_score, details} ─◄──────────────────────────────│
+
+
+RAG DOCUMENT Q&A DATA FLOW:
+-----------------------------
+  User Question
+       │
+       ▼
+  Multi-Query Expansion (3 variants)
+       │
+       ▼
+  ┌────────────────────────────┐
+  │ For each of 3 queries:     │
+  │  ├─ FAISS Dense Search (k=5)
+  │  └─ BM25 Sparse Search (k=5)
+  │  = Up to 30 candidates     │
+  └────────────────────────────┘
+       │
+       ▼
+  Deduplication (by text hash)
+       │
+       ▼
+  Re-Ranking (fusion score)
+  Score = (freq×2) + (3 if both retrievers) + (unique queries)
+       │
+       ▼
+  Top 5 Chunks → Context
+       │
+       ▼
+  LLM Answer (temperature=0.1, strict grounding)
+       │
+       ▼
+  Answer to User
+
+
+================================================================================
+SLIDE 16: VALIDATION & ERROR HANDLING
+================================================================================
+
+FRONTEND VALIDATION (ResumeForm.jsx):
+--------------------------------------
+• Name: Required, minimum 2 characters
+• Email: Regex pattern validation
+• Phone: Strip non-digits, require 10-15 digit count
+• URLs (LinkedIn, GitHub, Portfolio): Regex pattern validation
+• Years: Must be 4-digit year or "Present"
+• Skills: At least one non-empty skill required
+• Projects/Experience: At least one entry required
+
+BACKEND VALIDATION (resume_validators.py):
+-------------------------------------------
+8 validation functions, each returning (is_valid: bool, error_message: str):
+1. required(value, field_name) — Fails if None or whitespace
+2. min_length(value, n, field_name) — Checks minimum character length
+3. validate_name(value) — Requires ≥ 2 characters
+4. validate_email_format(value) — Uses email_validator library
+5. validate_phone(value) — 10-15 digits after stripping non-digits
+6. validate_url(value, field_name) — Regex URL pattern
+7. validate_year(value) — 4-digit year or "present"
+8. validate_comma_list(value) — At least one non-empty element
+
+PYDANTIC MODEL VALIDATION (resume_backend.py):
+-----------------------------------------------
+• Resume model validates: phone format, URL normalization, skill deduplication
+• Self-healing parser: If LLM JSON fails validation, feeds error back to LLM
+• Maximum 1 retry for automatic correction
+
+ERROR HANDLING PATTERNS:
+-------------------------
+• All API endpoints wrapped in try/except → return proper HTTP error codes
+• Frontend displays error banners with descriptive messages
+• Graceful degradation: If TTS fails, text-only mode continues
+• Audio autoplay blocked: Manual "Start" button appears as fallback
+
+
+================================================================================
+SLIDE 17: UNIQUE SELLING POINTS / INNOVATIONS
+================================================================================
+
+1. TALKING AI AVATAR INTERVIEWER
+   → Not just a chatbot — a video avatar (James Cooper) with synchronized
+     voice, three animated states, and sequential audio playback
+   → Creates an immersive, realistic interview simulation experience
+
+2. HUMAN-IN-THE-LOOP INTERVIEW DESIGN
+   → LangGraph's interrupt() mechanism creates natural conversation flow
+   → Server-side state persistence via MemorySaver checkpointer
+   → Adaptive follow-up questions based on answer quality
+
+3. HYBRID RESUME SCORING
+   → Combines deterministic cosine similarity (35%) with AI recruiter
+     analysis (65%) for reliable, explainable ATS scores
+   → Shows both statistical and qualitative feedback
+
+4. MULTI-QUERY HYBRID RAG
+   → Not just basic vector search — uses query expansion + dual retrieval
+     (FAISS + BM25) + fusion re-ranking for superior accuracy
+   → Strict hallucination prevention (temperature=0.1)
+
+5. DEADLINE-AWARE ROADMAP WITH FORCE-FIT
+   → Priority-weighted proportional compression when time is limited
+   → Mathematical algorithm ensures fair time distribution
+   → Every phase guaranteed at least 1 week
+
+6. SELF-HEALING JSON PARSER
+   → LLM output validation with automatic error correction
+   → Feeds Pydantic errors back to LLM for self-repair
+
+7. ZERO EXTERNAL UI FRAMEWORK
+   → Entire design system built with custom CSS variables and animations
+   → No Bootstrap, Tailwind, or Material UI dependency
+   → Minimal bundle size, maximum control
+
+8. 2,235+ CURATED LEARNING RESOURCES
+   → Hand-curated technical and soft-skill YouTube resources
+   → Multi-dimensional filtering (category, language, difficulty)
+   → Client-side execution for instant performance
+
+
+================================================================================
+SLIDE 18: FUTURE SCOPE
+================================================================================
+
+1. Multi-Language Interview Support
+   → Add Hindi, regional language interview modes
+   → Multi-lingual TTS and STT integration
+
+2. Video Recording & Playback
+   → Record candidate's webcam during interview
+   → AI analysis of body language and facial expressions
+
+3. Collaborative Resume Review
+   → Share resume with peers/mentors for collaborative feedback
+   → Version history and track changes
+
+4. Company-Specific Question Banks
+   → Curated question pools for specific companies (Google, Amazon, TCS, etc.)
+   → Historical placement data analysis
+
+5. Progress Tracking Dashboard
+   → Track interview scores over time
+   → Visualize improvement graphs and weak areas
+
+6. Mobile Application
+   → React Native or Flutter mobile app for on-the-go practice
+
+7. Integration with Job Portals
+   → Direct resume submission to LinkedIn, Naukri, etc.
+   → Real-time job matching based on resume profile
+
+8. Advanced Analytics
+   → Detailed speech pattern analysis (filler words, pace, confidence)
+   → Sentiment analysis of interview responses
+
+
+================================================================================
+SLIDE 19: CONCLUSION
+================================================================================
+
+Smart Placement is a comprehensive AI-powered career preparation platform
+that addresses the complete placement journey of engineering students:
+
+✅ Practice interviews with an intelligent AI avatar (voice + video)
+✅ Build, tailor, and score resumes with hybrid ATS + AI evaluation
+✅ Access 2,235+ curated learning resources across 72+ topics
+✅ Upload study material and get instant, accurate answers via RAG
+✅ Get a personalized, deadline-aware preparation roadmap
+
+TECHNICAL HIGHLIGHTS:
+• Built with modern stack: React 19, FastAPI, LangGraph, Groq LLM
+• 5 AI-powered modules with 15 REST API endpoints
+• Advanced algorithms: LangGraph FSMs, Hybrid RAG, Cosine Similarity,
+  Priority-Weighted Force-Fit, Self-Healing JSON Parsing
+• Custom design system with smooth animations and responsive layout
+• Production-ready architecture with session management and error handling
+
+
+================================================================================
+SLIDE 20: THANK YOU / Q&A
+================================================================================
+
+Thank You!
+
+Project: Smart Placement — AI Career Platform
+Technology: React 19 + FastAPI + LangGraph + Groq LLM
+Team: [Your Team Members]
+
+Questions?
+
+================================================================================
+                              END OF PRESENTATION CONTENT
+================================================================================
