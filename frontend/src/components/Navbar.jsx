@@ -19,6 +19,7 @@ export default function Navbar() {
         <NavLink to="/learning" className="nav-link" onClick={() => setIsOpen(false)}>Learning</NavLink>
         <NavLink to="/doc-qa" className="nav-link" onClick={() => setIsOpen(false)}>Doc Q&A</NavLink>
         <NavLink to="/roadmap" className="nav-link" onClick={() => setIsOpen(false)}>Roadmap</NavLink>
+        <NavLink to="/news" className="nav-link" onClick={() => setIsOpen(false)}>Latest News</NavLink>
       </div>
     </nav>
   )

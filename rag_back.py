@@ -35,21 +35,18 @@ from langchain_groq import ChatGroq
 import os
 # =============================    LLM CALLS ======================================
 
-# LLM for query expansion — moderate temperature is OK here (creative rephrasing)
 model_query = ChatGroq(
     model="openai/gpt-oss-120b",
     api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.4,
 )
 
-# LLM for answer generation — LOW temperature to prevent hallucination
 model_answer = ChatGroq(
     model="openai/gpt-oss-120b",
     api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.1,   # near-deterministic: stick to facts in context
 )
 
-# Keep backward-compat alias used elsewhere
 model_text = model_query
 embedding = HuggingFaceEmbeddings(
     model_name="BAAI/bge-small-en-v1.5"

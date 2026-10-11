@@ -7,6 +7,7 @@ import ResumeSuite from './pages/ResumeSuite'
 import LearningInception from './pages/LearningInception'
 import DocQA from './pages/DocQA'
 import Roadmap from './pages/Roadmap'
+import LatestNews from './pages/LatestNews'
 
 export default function App() {
   const location = useLocation()
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/learning" element={<LearningInception />} />
           <Route path="/doc-qa" element={<DocQA />} />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/news" element={<LatestNews />} />
         </Routes>
       </main>
     </>

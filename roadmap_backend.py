@@ -1,14 +1,3 @@
-"""
-roadmap_backend.py
-LangGraph-based backend for the Placement Mentor "Roadmap" feature.
-Model: Groq openai/gpt-oss-120b
-
-Install:
-    pip install langgraph langchain-groq pydantic
-
-Env:
-    export GROQ_API_KEY=your_key_here
-"""
 
 import os
 import math
@@ -22,7 +11,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
 
-load_dotenv()  # reads GROQ_API_KEY from a .env file in the same folder, if present
+load_dotenv()  
 
 
 # ---------------------------------------------------------------------------
