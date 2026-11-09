@@ -48,6 +48,7 @@ pytesseract==0.3.13
 
 # ── RAG (Document Q&A) ────────────────────────────────────────────────────────
 langchain-huggingface>=0.2.0
+sentence-transformers>=2.2.0
 faiss-cpu>=1.7.0
 rank-bm25>=0.2.2
 
