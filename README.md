@@ -1,3 +1,13 @@
+---
+title: Smart Placement API
+emoji: 🚀
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+app_file: app.py
+pinned: false
+---
+
 # 🎯 Smart Placement — AI Career Platform
 
 An AI-powered career preparation platform with two main features:
