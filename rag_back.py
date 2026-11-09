@@ -2,7 +2,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
-from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+# langchain_huggingface removed — LLMs are via ChatGroq; embeddings via FastEmbed
 from dotenv import load_dotenv  
 from typing import Annotated
 from langgraph.graph import add_messages
@@ -20,7 +20,7 @@ load_dotenv()
 import re
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
@@ -48,7 +48,7 @@ model_answer = ChatGroq(
 )
 
 model_text = model_query
-embedding = HuggingFaceEmbeddings(
+embedding = FastEmbedEmbeddings(
     model_name="BAAI/bge-small-en-v1.5"
 )
 
