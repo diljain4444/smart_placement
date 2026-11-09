@@ -59,8 +59,9 @@ export default function LatestNews() {
     loadNews()
   }, [])
 
-  // Count total news items
-  const totalNews = newsData.reduce((sum, c) => sum + (c.news?.length || 0), 0)
+  // Only companies that actually have news
+  const companiesWithNews = newsData.filter((c) => c.news && c.news.length > 0)
+  const totalNews = companiesWithNews.reduce((sum, c) => sum + c.news.length, 0)
 
   return (
     <div className="news-page">
@@ -73,7 +74,7 @@ export default function LatestNews() {
       <div className="news-toolbar">
         <div className="news-stats">
           <span className="news-stat-badge">
-            {newsData.length} Companies
+            {companiesWithNews.length} Companies
           </span>
           <span className="news-stat-badge">
             {totalNews} Articles
@@ -107,38 +108,40 @@ export default function LatestNews() {
       {/* News content */}
       {!loading && !error && (
         <div className="news-grid">
-          {newsData.map((company) => {
-            const color = COMPANY_COLORS[company.company] || 'var(--accent)'
-            const hasNews = company.news && company.news.length > 0
+          {companiesWithNews.length === 0 ? (
+            <div className="news-empty" style={{ gridColumn: '1 / -1', padding: '3rem 1rem' }}>
+              <span className="news-empty-icon">📭</span>
+              <span>No placement-relevant news found right now. Try refreshing.</span>
+            </div>
+          ) : (
+            companiesWithNews.map((company) => {
+              const color = COMPANY_COLORS[company.company] || 'var(--accent)'
 
-            return (
-              <div className="news-company-card" key={company.company}>
-                {/* Company header */}
-                <div className="news-company-header">
-                  <div
-                    className="news-company-icon"
-                    style={{ background: color }}
-                  >
-                    {company.company.charAt(0)}
+              return (
+                <div className="news-company-card" key={company.company}>
+                  {/* Company header */}
+                  <div className="news-company-header">
+                    <div
+                      className="news-company-icon"
+                      style={{ background: color }}
+                    >
+                      {company.company.charAt(0)}
+                    </div>
+                    <div className="news-company-info">
+                      <h3 className="news-company-name">{company.company}</h3>
+                      <span className="news-company-count">
+                        {`${company.news.length} article${company.news.length > 1 ? 's' : ''}`}
+                      </span>
+                    </div>
+                    {company.stale && (
+                      <span className="news-stale-badge">Cached</span>
+                    )}
+                    {company.error && (
+                      <span className="news-error-badge">Error</span>
+                    )}
                   </div>
-                  <div className="news-company-info">
-                    <h3 className="news-company-name">{company.company}</h3>
-                    <span className="news-company-count">
-                      {hasNews
-                        ? `${company.news.length} article${company.news.length > 1 ? 's' : ''}`
-                        : 'No recent news'}
-                    </span>
-                  </div>
-                  {company.stale && (
-                    <span className="news-stale-badge">Cached</span>
-                  )}
-                  {company.error && (
-                    <span className="news-error-badge">Error</span>
-                  )}
-                </div>
 
-                {/* News items */}
-                {hasNews ? (
+                  {/* News items */}
                   <div className="news-items">
                     {company.news.map((item, idx) => (
                       <div className="news-item" key={idx}>
@@ -149,15 +152,10 @@ export default function LatestNews() {
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="news-empty">
-                    <span className="news-empty-icon">📭</span>
-                    <span>No placement-relevant news in the last 3 days</span>
-                  </div>
-                )}
-              </div>
-            )
-          })}
+                </div>
+              )
+            })
+          )}
         </div>
       )}
     </div>
