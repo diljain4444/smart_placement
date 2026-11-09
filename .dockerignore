@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# Frontend (not needed in backend container)
+frontend/node_modules
+frontend/dist
+frontend/.venv
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv
+venv
+env
+
+# Local env files (secrets go in HF Space settings)
+.env
+.env.local
+
+# News cache (regenerated at runtime)
+news_cache.json
+
+# Dev/editor
+.vscode
+.idea
+*.suo
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Render config (not needed for HF)
+Procfile
+render.yaml
