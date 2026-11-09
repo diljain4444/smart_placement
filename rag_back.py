@@ -48,17 +48,9 @@ model_answer = ChatGroq(
 )
 
 model_text = model_query
-
-# Lazy embedding: load only on first use, not at startup (saves ~400MB RAM on Render)
-_embedding = None
-
-def get_embedding():
-    global _embedding
-    if _embedding is None:
-        _embedding = HuggingFaceEmbeddings(
-            model_name="BAAI/bge-small-en-v1.5"
-        )
-    return _embedding
+embedding = HuggingFaceEmbeddings(
+    model_name="BAAI/bge-small-en-v1.5"
+)
 
 #========================    TEXT INGESTION =================================================
 
