@@ -36,7 +36,7 @@ from resume_backend import (
 )
 from rag_back import (
     preprocess as rag_preprocess,
-    embedding as rag_embedding,
+    get_embedding as rag_get_embedding,
     workflow as rag_workflow,
 )
 from roadmap_backend import generate_roadmap
@@ -725,7 +725,7 @@ async def rag_upload(file: UploadFile = File(...)):
             raise HTTPException(400, "No text could be extracted from the document.")
 
         # Build FAISS vector store
-        faiss_store = FAISS.from_documents(chunks, rag_embedding)
+        faiss_store = FAISS.from_documents(chunks, rag_get_embedding())
         faiss_retriever = faiss_store.as_retriever(search_kwargs={"k": 5})
 
         # Build BM25 retriever
