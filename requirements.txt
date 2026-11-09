@@ -10,6 +10,7 @@ python-multipart>=0.0.9
 python-dotenv==1.2.2
 
 # ── Audio (TTS + STT via Groq Whisper) ───────────────────────────────────────
+edge-tts>=7.0.0
 gTTS>=2.5.0
 groq==0.37.1
 

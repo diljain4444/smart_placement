@@ -32,7 +32,7 @@ model_text = ChatGroq(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TEXT → AUDIO (Groq TTS with gTTS fallback)
+# TEXT → AUDIO (Male Voice: edge-tts en-US-GuyNeural + Groq TTS daniel fallback)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 _groq_client = None  # shared lazy-loaded singleton for TTS and STT
@@ -46,13 +46,27 @@ def _get_groq_client():
     return _groq_client
 
 
-def _synthesize_audio_groq(text: str) -> bytes:
-    """Synthesize audio using Groq TTS API (canopylabs/orpheus-v1-english)."""
+async def _synthesize_audio_edge(text: str, voice: str = "en-US-GuyNeural") -> bytes:
+    """Natural Microsoft Neural male voice (en-US-GuyNeural) for James Cooper."""
+    import edge_tts
+    communicate = edge_tts.Communicate(text, voice, rate="-5%")
+    buffer = io.BytesIO()
+    async for chunk in communicate.stream():
+        if chunk["type"] == "audio":
+            buffer.write(chunk["data"])
+    buffer.seek(0)
+    return buffer.read()
+
+
+def _synthesize_audio_groq(text: str, voice: str = "daniel") -> bytes:
+    """Groq TTS with natural male voice ('daniel')."""
     client = _get_groq_client()
+    # Keep input concise to respect API limits
+    clean_input = text[:250].strip() if len(text) > 250 else text
     response = client.audio.speech.create(
         model="canopylabs/orpheus-v1-english",
-        voice="daniel",
-        input=text,
+        voice=voice,
+        input=clean_input,
         response_format="wav",
     )
     if hasattr(response, "content") and response.content:
@@ -63,7 +77,7 @@ def _synthesize_audio_groq(text: str) -> bytes:
 
 
 def _synthesize_audio_gtts(text: str) -> bytes:
-    """Fallback TTS using Google Text-to-Speech (gTTS). Returns MP3 bytes."""
+    """Final fallback using gTTS if other engines are unreachable."""
     from gtts import gTTS
     buf = io.BytesIO()
     tts = gTTS(text=text, lang="en", slow=False)
@@ -72,60 +86,57 @@ def _synthesize_audio_gtts(text: str) -> bytes:
     return buf.read()
 
 
-def synthesize_audio_bytes(text: str) -> bytes:
+async def text_to_audio_b64_async(text: str) -> str:
     """
-    Synthesize audio from text.
-    Primary: Groq TTS API (ultra-fast, natural sounding).
-    Fallback: gTTS (Google TTS, reliable everywhere).
+    Async version for FastAPI routes.
+    Prioritizes realistic MALE voices:
+      1. Microsoft edge-tts 'en-US-GuyNeural' (professional male recruiter voice)
+      2. Groq TTS 'daniel' (male voice)
+      3. gTTS fallback
     """
     if not text or not text.strip():
-        return b""
+        return ""
 
-    # 1. Try Groq TTS
+    # Tier 1: Try edge-tts with male voice (en-US-GuyNeural)
+    try:
+        audio_bytes = await _synthesize_audio_edge(text, voice="en-US-GuyNeural")
+        if audio_bytes and len(audio_bytes) > 100:
+            print(f"[TTS] edge-tts male voice (en-US-GuyNeural) succeeded ({len(audio_bytes)} bytes)")
+            return base64.b64encode(audio_bytes).decode("utf-8")
+    except Exception as e:
+        print(f"[TTS] edge-tts male voice failed: {e}. Trying Groq TTS...")
+
+    # Tier 2: Try Groq TTS male voice ('daniel') in executor
     if os.getenv("GROQ_API_KEY"):
         try:
-            audio = _synthesize_audio_groq(text)
-            if audio and len(audio) > 100:
-                print(f"[TTS] Groq TTS succeeded ({len(audio)} bytes)")
-                return audio
+            loop = asyncio.get_event_loop()
+            audio_bytes = await loop.run_in_executor(None, _synthesize_audio_groq, text, "daniel")
+            if audio_bytes and len(audio_bytes) > 100:
+                print(f"[TTS] Groq TTS male voice (daniel) succeeded ({len(audio_bytes)} bytes)")
+                return base64.b64encode(audio_bytes).decode("utf-8")
         except Exception as e:
-            print(f"[TTS] Groq TTS failed ({e}). Trying gTTS fallback...")
+            print(f"[TTS] Groq TTS male voice failed: {e}. Trying gTTS fallback...")
 
-    # 2. Try gTTS fallback
+    # Tier 3: gTTS fallback
     try:
-        audio = _synthesize_audio_gtts(text)
-        if audio and len(audio) > 100:
-            print(f"[TTS] gTTS fallback succeeded ({len(audio)} bytes)")
-            return audio
+        loop = asyncio.get_event_loop()
+        audio_bytes = await loop.run_in_executor(None, _synthesize_audio_gtts, text)
+        if audio_bytes and len(audio_bytes) > 100:
+            print(f"[TTS] gTTS fallback succeeded ({len(audio_bytes)} bytes)")
+            return base64.b64encode(audio_bytes).decode("utf-8")
     except Exception as e:
         print(f"[TTS] gTTS fallback failed: {e}")
 
-    return b""
-
-
-async def text_to_audio_b64_async(text: str) -> str:
-    """Async version for FastAPI routes. Runs synthesis in thread executor."""
-    try:
-        loop = asyncio.get_event_loop()
-        audio_bytes = await loop.run_in_executor(None, synthesize_audio_bytes, text)
-        if not audio_bytes:
-            print("[TTS] Warning: synthesized audio bytes is empty")
-            return ""
-        result = base64.b64encode(audio_bytes).decode("utf-8")
-        print(f"[TTS] text_to_audio_b64_async success (base64 length: {len(result)})")
-        return result
-    except Exception as e:
-        print(f"[TTS] text_to_audio_b64_async FAILED: {repr(e)}")
-        return ""
+    return ""
 
 
 def text_to_audio_b64(text: str) -> str:
     """Sync wrapper for TTS."""
     try:
-        audio_bytes = synthesize_audio_bytes(text)
-        if not audio_bytes:
-            return ""
-        return base64.b64encode(audio_bytes).decode("utf-8")
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(asyncio.run, text_to_audio_b64_async(text))
+            return future.result(timeout=30)
     except Exception as e:
         print(f"[TTS] text_to_audio_b64 FAILED: {repr(e)}")
         return ""
