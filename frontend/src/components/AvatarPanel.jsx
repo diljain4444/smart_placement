@@ -50,8 +50,9 @@ export default function AvatarPanel({
     return new Promise((resolve) => {
       if (!b64) return resolve()
 
-      // Create a brand-new Audio object for each clip
-      const audio = new Audio(`data:audio/mpeg;base64,${b64}`)
+      // Create a brand-new Audio object for each clip (supports both WAV and MP3)
+      const mime = b64.startsWith('UklGR') ? 'audio/wav' : 'audio/mpeg'
+      const audio = new Audio(`data:${mime};base64,${b64}`)
       audioRef.current = audio
 
       audio.onended = () => {

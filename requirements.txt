@@ -6,14 +6,11 @@ fastapi>=0.115.0
 uvicorn[standard]>=0.30.0
 python-multipart>=0.0.9
 
-# ── Gradio (HF Spaces entry point) ────────────────────────────────────────────
-gradio>=4.0.0
-
 # ── Environment ───────────────────────────────────────────────────────────────
 python-dotenv==1.2.2
 
 # ── Audio (TTS + STT via Groq Whisper) ───────────────────────────────────────
-edge-tts==7.2.8
+gTTS>=2.5.0
 groq==0.37.1
 
 # ── Pydantic ──────────────────────────────────────────────────────────────────

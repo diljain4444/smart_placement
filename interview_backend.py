@@ -16,14 +16,11 @@ import re
 from langgraph.types import interrupt
 from langgraph.checkpoint.memory import MemorySaver
 
-# ── NEW IMPORTS ───────────────────────────────────────────────────────────────
-import edge_tts
+# ── AUDIO IMPORTS ─────────────────────────────────────────────────────────────
 import asyncio
 import io
 import base64
 import tempfile
-import os
-
 import os
 model_text = ChatGroq(
     
@@ -35,95 +32,10 @@ model_text = ChatGroq(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NEW: TEXT → AUDIO (edge-tts)
+# TEXT → AUDIO (Groq TTS with gTTS fallback)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-async def _synthesize_audio(text: str) -> bytes:
-    """Core async TTS synthesis using edge-tts. Returns raw MP3 bytes."""
-    communicate = edge_tts.Communicate(text, "en-US-GuyNeural", rate="-10%")
-    buffer = io.BytesIO()
-    async for chunk in communicate.stream():
-        if chunk["type"] == "audio":
-            buffer.write(chunk["data"])
-    buffer.seek(0)
-    audio_bytes = buffer.read()
-    print(f"[TTS] Synthesized {len(audio_bytes)} bytes of audio for text: {text[:60]}...")
-    return audio_bytes
-
-
-async def text_to_audio_b64_async(text: str) -> str:
-    """Async version — call this from FastAPI async routes."""
-    try:
-        print(f"[TTS] text_to_audio_b64_async called, text length: {len(text)}")
-        audio_bytes = await _synthesize_audio(text)
-        if not audio_bytes:
-            print("[TTS] WARNING: edge-tts returned empty audio bytes")
-            return ""
-        result = base64.b64encode(audio_bytes).decode("utf-8")
-        print(f"[TTS] base64 result length: {len(result)}")
-        return result
-    except Exception as e:
-        print(f"[TTS] FAILED: {repr(e)}")
-        import traceback
-        traceback.print_exc()
-        return ""
-
-
-def text_to_audio_b64(text: str) -> str:
-    """
-    Sync wrapper for TTS. Detects if an asyncio event loop is already
-    running (e.g. inside FastAPI) and handles it correctly.
-    Returns base64-encoded MP3 string, or "" on failure.
-    """
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-
-    if loop and loop.is_running():
-        # We're inside an async context (FastAPI) — cannot use asyncio.run().
-        # Use a new thread to avoid blocking the event loop.
-        import concurrent.futures
-        print("[TTS] Detected running event loop, using thread executor")
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future = executor.submit(asyncio.run, _synthesize_audio(text))
-            try:
-                audio_bytes = future.result(timeout=30)
-                if not audio_bytes:
-                    print("[TTS] WARNING: edge-tts returned empty audio bytes")
-                    return ""
-                result = base64.b64encode(audio_bytes).decode("utf-8")
-                print(f"[TTS] Sync wrapper success, base64 length: {len(result)}")
-                return result
-            except Exception as e:
-                print(f"[TTS] Thread executor FAILED: {repr(e)}")
-                import traceback
-                traceback.print_exc()
-                return ""
-    else:
-        # No event loop running — safe to use asyncio.run()
-        try:
-            print("[TTS] No running event loop, using asyncio.run()")
-            audio_bytes = asyncio.run(_synthesize_audio(text))
-            if not audio_bytes:
-                return ""
-            return base64.b64encode(audio_bytes).decode("utf-8")
-        except Exception as e:
-            print(f"[TTS] asyncio.run FAILED: {repr(e)}")
-            import traceback
-            traceback.print_exc()
-            return ""
-
-# alias kept for backward compat
-question_to_audio_b64 = text_to_audio_b64
-question_to_audio_b64_async = text_to_audio_b64_async
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# AUDIO → TEXT (Groq Whisper API — no local model needed)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-_groq_client = None  # lazy-loaded singleton
+_groq_client = None  # shared lazy-loaded singleton for TTS and STT
 
 
 def _get_groq_client():
@@ -132,6 +44,103 @@ def _get_groq_client():
         from groq import Groq
         _groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     return _groq_client
+
+
+def _synthesize_audio_groq(text: str) -> bytes:
+    """Synthesize audio using Groq TTS API (canopylabs/orpheus-v1-english)."""
+    client = _get_groq_client()
+    response = client.audio.speech.create(
+        model="canopylabs/orpheus-v1-english",
+        voice="daniel",
+        input=text,
+        response_format="wav",
+    )
+    if hasattr(response, "content") and response.content:
+        return response.content
+    if hasattr(response, "read"):
+        return response.read()
+    return b""
+
+
+def _synthesize_audio_gtts(text: str) -> bytes:
+    """Fallback TTS using Google Text-to-Speech (gTTS). Returns MP3 bytes."""
+    from gtts import gTTS
+    buf = io.BytesIO()
+    tts = gTTS(text=text, lang="en", slow=False)
+    tts.write_to_fp(buf)
+    buf.seek(0)
+    return buf.read()
+
+
+def synthesize_audio_bytes(text: str) -> bytes:
+    """
+    Synthesize audio from text.
+    Primary: Groq TTS API (ultra-fast, natural sounding).
+    Fallback: gTTS (Google TTS, reliable everywhere).
+    """
+    if not text or not text.strip():
+        return b""
+
+    # 1. Try Groq TTS
+    if os.getenv("GROQ_API_KEY"):
+        try:
+            audio = _synthesize_audio_groq(text)
+            if audio and len(audio) > 100:
+                print(f"[TTS] Groq TTS succeeded ({len(audio)} bytes)")
+                return audio
+        except Exception as e:
+            print(f"[TTS] Groq TTS failed ({e}). Trying gTTS fallback...")
+
+    # 2. Try gTTS fallback
+    try:
+        audio = _synthesize_audio_gtts(text)
+        if audio and len(audio) > 100:
+            print(f"[TTS] gTTS fallback succeeded ({len(audio)} bytes)")
+            return audio
+    except Exception as e:
+        print(f"[TTS] gTTS fallback failed: {e}")
+
+    return b""
+
+
+async def text_to_audio_b64_async(text: str) -> str:
+    """Async version for FastAPI routes. Runs synthesis in thread executor."""
+    try:
+        loop = asyncio.get_event_loop()
+        audio_bytes = await loop.run_in_executor(None, synthesize_audio_bytes, text)
+        if not audio_bytes:
+            print("[TTS] Warning: synthesized audio bytes is empty")
+            return ""
+        result = base64.b64encode(audio_bytes).decode("utf-8")
+        print(f"[TTS] text_to_audio_b64_async success (base64 length: {len(result)})")
+        return result
+    except Exception as e:
+        print(f"[TTS] text_to_audio_b64_async FAILED: {repr(e)}")
+        return ""
+
+
+def text_to_audio_b64(text: str) -> str:
+    """Sync wrapper for TTS."""
+    try:
+        audio_bytes = synthesize_audio_bytes(text)
+        if not audio_bytes:
+            return ""
+        return base64.b64encode(audio_bytes).decode("utf-8")
+    except Exception as e:
+        print(f"[TTS] text_to_audio_b64 FAILED: {repr(e)}")
+        return ""
+
+
+# Aliases kept for backward compatibility
+question_to_audio_b64 = text_to_audio_b64
+question_to_audio_b64_async = text_to_audio_b64_async
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AUDIO → TEXT (Groq Whisper API — no local model needed)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# _groq_client and _get_groq_client() are defined above
 
 
 def transcribe_audio(audio_bytes: bytes) -> str:
